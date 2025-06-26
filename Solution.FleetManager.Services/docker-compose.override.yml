@@ -1,0 +1,12 @@
+services:
+  fleetmanager.service.api.admin:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DBConnectionString=${DBConnectionString}
+      - FRONTEND_HOST=${FRONTEND_HOST}
+      - SERVICES_HOST=${SERVICES_HOST}
+      - TZ=${TIMEZONE}
+    # volumes:
+    #   - ./media:/app/media
+    ports:
+       - "7670:8080"

@@ -1,0 +1,7 @@
+services:
+  fleetmanager.service.api.admin:
+    image: ${DOCKER_REGISTRY}/elearninggx-service-api-admin:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: src/api/Service.Admin/Dockerfile

@@ -1,0 +1,149 @@
+using Library.Infraestructure.Common.Filters.Swagger;
+using Library.Infraestructure.Common.Helpers;
+using Library.Infraestructure.Persistence.Models;
+using Library.Infraestructure.Persistence.Models.PostgreSQL;
+using Library.Infraestructure.Persistence.UnitOfWorks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(BaseHelper.GetSha256(BaseHelper.GetConnectionString())));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = BaseHelper.GetEnvVariable("SERVICES_HOST"),
+            ValidAudience = BaseHelper.GetEnvVariable("SERVICES_HOST"),
+            IssuerSigningKey = key
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("Error de autenticacion.");
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    var version = "v1";
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    var localhostPort = 7670;
+    var proxyPath = "admin";
+
+    c.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName));
+    c.OperationFilter<TagByApiExplorerSettingsOperationFilter>();
+    c.OperationFilter<EndpointDocumentationOperationFilter>();
+    c.DocumentFilter<BasePathDocumentFilter>(localhostPort, proxyPath);
+    c.SwaggerDoc(version, new OpenApiInfo
+    {
+        Title = $"FleetManager.Services.Api.Admin {version}",
+        Version = version,
+        Description = "Services.Api.Admin",
+    });
+    c.IncludeXmlComments(xmlPath);
+
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Ingrese el token en el formato: Bearer {TOKEN}",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    };
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            new List<string>()
+        }
+    });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+builder.Services.AddDbContext<DataBaseContext>(options => options.UseNpgsql(BaseHelper.GetConnectionString()));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+
+
+
+
+
+
+
+
+//var builder = WebApplication.CreateBuilder(args);
+
+//// Add services to the container.
+
+//builder.Services.AddControllers();
+//// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
+
+//var app = builder.Build();
+
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+//app.UseAuthorization();
+
+//app.MapControllers();
+
+//app.Run();

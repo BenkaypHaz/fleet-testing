@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
+
+public partial class BusinessProviderTransportVehicle
+{
+    public long Id { get; set; }
+
+    public long BusinessProviderProfileId { get; set; }
+
+    public long? BusinessProviderDriverId { get; set; }
+
+    public string PlateNumber { get; set; } = null!;
+
+    public string Brand { get; set; } = null!;
+
+    public string Model { get; set; } = null!;
+
+    public int Year { get; set; }
+
+    public string Color { get; set; } = null!;
+
+    public string Vin { get; set; } = null!;
+
+    public int Axles { get; set; }
+
+    public string? Description { get; set; }
+
+    public long CreatedBy { get; set; }
+
+    public DateTime CreatedDate { get; set; }
+
+    public long? ModifiedBy { get; set; }
+
+    public DateTime? ModifiedDate { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public virtual BusinessProviderDriver? BusinessProviderDriver { get; set; }
+
+    public virtual BusinessProviderProfile BusinessProviderProfile { get; set; } = null!;
+
+    public virtual AuthUser CreatedByNavigation { get; set; } = null!;
+
+    public virtual AuthUser? ModifiedByNavigation { get; set; }
+
+    public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
+
+    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
+}

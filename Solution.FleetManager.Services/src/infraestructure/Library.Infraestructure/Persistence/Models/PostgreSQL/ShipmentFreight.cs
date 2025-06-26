@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
+
+public partial class ShipmentFreight
+{
+    public long Id { get; set; }
+
+    public long ShipmentProjectContractId { get; set; }
+
+    public long ProviderTransportVehicleId { get; set; }
+
+    public long CustomerWarehouseId { get; set; }
+
+    public long ProviderDriverId { get; set; }
+
+    public long ShipmentFreightStatusId { get; set; }
+
+    public long ShipmentFreightTypeId { get; set; }
+
+    public decimal Price { get; set; }
+
+    public decimal Cost { get; set; }
+
+    public string? Observations { get; set; }
+
+    public long CreatedBy { get; set; }
+
+    public DateTime CreatedDate { get; set; }
+
+    public long? ModifiedBy { get; set; }
+
+    public DateTime? ModifiedDate { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public virtual AuthUser CreatedByNavigation { get; set; } = null!;
+
+    public virtual CustomerWarehouse CustomerWarehouse { get; set; } = null!;
+
+    public virtual AuthUser? ModifiedByNavigation { get; set; }
+
+    public virtual BusinessProviderDriver ProviderDriver { get; set; } = null!;
+
+    public virtual BusinessProviderTransportVehicle ProviderTransportVehicle { get; set; } = null!;
+
+    public virtual ICollection<ShipmentExpense> ShipmentExpenses { get; set; } = new List<ShipmentExpense>();
+
+    public virtual ShipmentFreightStatus ShipmentFreightStatus { get; set; } = null!;
+
+    public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogs { get; set; } = new List<ShipmentFreightStatusLog>();
+
+    public virtual ShipmentFreightType ShipmentFreightType { get; set; } = null!;
+
+    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
+
+    public virtual ShipmentProjectContract ShipmentProjectContract { get; set; } = null!;
+}
