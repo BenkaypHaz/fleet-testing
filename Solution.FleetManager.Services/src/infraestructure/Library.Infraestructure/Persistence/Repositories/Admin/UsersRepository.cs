@@ -128,14 +128,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
                 // Retorna 200 OK con la lista paginada
                 return new GenericHandlerResponse<UserReadFirstDTO>(200, data: user);
-            }
+            
 
         }
 
         public async Task<GenericHandlerResponse<long>> Create(UsersCreateDTO payload, long usuId)
         {
-            try
-            {
+
                 if (await _context.AuthUsers.AnyAsync(x => x.Dni == payload.Dni))
                     return new GenericHandlerResponse<long>(409, CustomMessage: $"El NDI: {payload.Dni} ya existe en el sistema.");
                 if (await _context.AuthUsers.AnyAsync(x => x.UserName == payload.UserName))
