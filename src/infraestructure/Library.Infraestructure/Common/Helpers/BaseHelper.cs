@@ -1,5 +1,5 @@
-﻿using Library.Infraestructure.Persistence.DTOs.General.ErrorLogs.Create;
-using Library.Infraestructure.Persistence.DTOs.Helpers;
+﻿using Library.Infraestructure.Persistence.DTOs.General.ErrorLog.Create;
+using Library.Infraestructure.Persistence.DTOs.Utils;
 using Library.Infraestructure.Persistence.Models;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 using MailKit.Net.Smtp;
@@ -96,7 +96,7 @@ namespace Library.Infraestructure.Common.Helpers
 
         #region Emails
 
-        public static async Task<bool> SendEmail(string NameRecipient, string emailRecipient, string template, string subject = "CoreExpress - Registro completado con éxito")
+        public static async Task<bool> SendEmail(string NameRecipient, string emailRecipient, string template, string subject)
         {
             var emailSender = "info@coreexpresshn.com";
             var password = "ugov foas calx rits";
@@ -174,12 +174,12 @@ namespace Library.Infraestructure.Common.Helpers
             }
         }
 
-        private static ErrorLogsCreateDTO GetExceptionDetails(Exception ex)
+        private static ErrorLogCreateDTO GetExceptionDetails(Exception ex)
         {
             var stackTrace = new StackTrace(ex, true);
             var frame = stackTrace.GetFrame(0); // Primera línea del stack trace
 
-            var response = new ErrorLogsCreateDTO();
+            var response = new ErrorLogCreateDTO();
             response.ProjectName = ex.TargetSite?.DeclaringType?.Assembly.GetName().Name ?? "CoReExpress Infraestructure";
             response.ClassName = ex.TargetSite?.DeclaringType?.FullName?.Split('+')[0] ?? "UnknownClass";
             response.MethodName = frame?.GetMethod()?.Name ?? "UnknownMethod";
@@ -198,7 +198,7 @@ namespace Library.Infraestructure.Common.Helpers
             return response;
         }
 
-        private static async Task SendNotification(ErrorLogsCreateDTO errorDetails)
+        private static async Task SendNotification(ErrorLogCreateDTO errorDetails)
         {
             var webhookUrl = "https://discord.com/api/webhooks/1235311698915623075/NmF3bZCDlv3CQ7g5G0wVp0RW0rFp6zplw2MyyIPgf1U9HbM0VCU-DG15ilz7oVstRyce";
             string payload = $@"

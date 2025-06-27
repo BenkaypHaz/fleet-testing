@@ -1,4 +1,5 @@
-﻿using Library.Infraestructure.Persistence.Repositories.Admin;
+﻿using Library.Infraestructure.Persistence.Repositories.Auth;
+using Library.Infraestructure.Persistence.Repositories.General;
 
 
 namespace Library.Infraestructure.Persistence.UnitOfWorks
@@ -6,11 +7,16 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
     public interface IUnitOfWork
     {
         #region Service.Admin
-        UsersRepository UsersRepository { get; }
-        AuthRepository AuthRepository { get; }
-        RolesRepository RolesRepository { get; }
-        AuthorizationsRepository AuthorizationsRepository { get; }
-        GeneralRepository GeneralRepository { get; }
+
+        LoginRepository LoginRepository { get; }
+        UserRepository UserRepository { get; }
+        RoleRepository RoleRepository { get; }
+        AuthorizationRepository AuthorizationRepository { get; }
+
+        CountryRepository CountryRepository { get; }
+        RegionRepository RegionRepository { get; }
+        CityRepository CityRepository { get; }
+
         #endregion
     }
 }

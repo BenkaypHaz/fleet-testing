@@ -1,5 +1,5 @@
 ﻿using Library.Infraestructure.Common.ResponseHandler;
-using Library.Infraestructure.Persistence.DTOs.General.Utils;
+using Library.Infraestructure.Persistence.DTOs.Utils;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,30 +7,29 @@ namespace Api.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "GeneralController")]
-    [Route("Api/[controller]")]
+    [Route("api/[controller]")]
     public class GeneralController : BaseControllerUsers
     {
         public GeneralController(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
 
 
-        /// <summary>Retorna un "Ok" para comprobar el correcto funcionamiento del controlador.</summary>
-        [HttpGet("HealthCheck")]
+        [HttpGet("health-check")]
         public string HealthCheck()
         {
             return "Ok!";
         }
 
-        [HttpGet("States/GetAll")]
-        public async Task<ActionResult<GenericHandlerResponse<List<GenericDropDown>>>> Get()
+        [HttpGet("regions")]
+        public async Task<ActionResult<GenericResponseHandler<List<GenericDropDown>>>> Get()
         {
-            var result = await _unitOfWork.GeneralRepository.GetStates();
+            var result = await _unitOfWork.RegionRepository.Get();
             return StatusCode(result.statusCode, result);
         }
 
-        [HttpGet("Cities/GetByStateId/{StateId}")]
-        public async Task<ActionResult<GenericHandlerResponse<List<GenericDropDown>>>> Get(long StateId)
+        [HttpGet("cities/{regionId}")]
+        public async Task<ActionResult<GenericResponseHandler<List<GenericDropDown>>>> Get(long regionId)
         {
-            var result = await _unitOfWork.GeneralRepository.GetCities(StateId);
+            var result = await _unitOfWork.CityRepository.GetByRegionId(regionId);
             return StatusCode(result.statusCode, result);
         }
 

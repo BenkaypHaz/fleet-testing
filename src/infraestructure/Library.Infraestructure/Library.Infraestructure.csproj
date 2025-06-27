@@ -8,23 +8,26 @@
 
   <ItemGroup>
     <Compile Remove="Context\**" />
+    <Compile Remove="ExternalServices\**" />
+    <Compile Remove="Persistence\DTOs\Admin\**" />
     <Compile Remove="Persistence\DTOs\Cities\**" />
     <EmbeddedResource Remove="Context\**" />
+    <EmbeddedResource Remove="ExternalServices\**" />
+    <EmbeddedResource Remove="Persistence\DTOs\Admin\**" />
     <EmbeddedResource Remove="Persistence\DTOs\Cities\**" />
     <None Remove="Context\**" />
+    <None Remove="ExternalServices\**" />
+    <None Remove="Persistence\DTOs\Admin\**" />
     <None Remove="Persistence\DTOs\Cities\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configuration\" />
-    <Folder Include="ExternalServices\DTOs\" />
-    <Folder Include="ExternalServices\Middlewares\" />
-    <Folder Include="ExternalServices\Repositories\" />
-    <Folder Include="Persistence\DTOs\Admin\Auth\Create\" />
+    <Folder Include="Configuration\Automapper\Auth\" />
     <Folder Include="Persistence\Models\PostgreSQL\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.1" />
     <PackageReference Include="MailKit" Version="4.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">

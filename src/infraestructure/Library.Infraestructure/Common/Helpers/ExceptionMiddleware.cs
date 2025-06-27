@@ -2,13 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Library.Infraestructure.Common.Helpers
@@ -124,14 +118,14 @@ namespace Library.Infraestructure.Common.Helpers
         }
 
 
-        private GenericHandlerResponse<object> CreateErrorResponse(Exception ex, int statusCode)
+        private GenericResponseHandler<object> CreateErrorResponse(Exception ex, int statusCode)
         {
-            return new GenericHandlerResponse<object>(
+            return new GenericResponseHandler<object>(
                 statusCode: statusCode,
                 data: null,
                 dataRecords: 0,
-                CustomMessage: null,
-                ExceptionMessage: ex.Message
+                message: null,
+                exceptionMessage: ex.Message
             );
         }
     }
