@@ -21,7 +21,7 @@ public partial class GeneralCity
 
     public bool IsActive { get; set; }
 
-    public virtual ICollection<BusinessProviderProfile> BusinessProviderProfiles { get; set; } = new List<BusinessProviderProfile>();
+    public virtual ICollection<BusinessPartnerProviderProfile> BusinessPartnerProviderProfiles { get; set; } = new List<BusinessPartnerProviderProfile>();
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
@@ -34,6 +34,4 @@ public partial class GeneralCity
     public virtual GeneralRegion Region { get; set; } = null!;
 
     public virtual ICollection<SettingDispatchBranch> SettingDispatchBranches { get; set; } = new List<SettingDispatchBranch>();
-
-    public virtual ICollection<ShipmentGasStation> ShipmentGasStations { get; set; } = new List<ShipmentGasStation>();
 }

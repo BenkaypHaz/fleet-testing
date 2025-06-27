@@ -17,6 +17,8 @@ public partial class AuthUserForgotPwdToken
 
     public DateTime CreatedDate { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual AuthUser? CreatedByNavigation { get; set; }
 
     public virtual AuthUser User { get; set; } = null!;

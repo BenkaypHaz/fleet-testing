@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Library.Infraestructure.Common.Helpers;
+﻿using Library.Infraestructure.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
@@ -30,19 +30,21 @@ public partial class DataBaseContext : DbContext
 
     public virtual DbSet<AuthUserRole> AuthUserRoles { get; set; }
 
-    public virtual DbSet<BusinessPositionType> BusinessPositionTypes { get; set; }
+    public virtual DbSet<BusinessPartnerPositionType> BusinessPartnerPositionTypes { get; set; }
 
-    public virtual DbSet<BusinessProviderDriver> BusinessProviderDrivers { get; set; }
+    public virtual DbSet<BusinessPartnerProviderDriver> BusinessPartnerProviderDrivers { get; set; }
 
-    public virtual DbSet<BusinessProviderProfile> BusinessProviderProfiles { get; set; }
+    public virtual DbSet<BusinessPartnerProviderProfile> BusinessPartnerProviderProfiles { get; set; }
 
-    public virtual DbSet<BusinessProviderProfileContactPerson> BusinessProviderProfileContactPeople { get; set; }
+    public virtual DbSet<BusinessPartnerProviderProfileCategory> BusinessPartnerProviderProfileCategories { get; set; }
 
-    public virtual DbSet<BusinessProviderProfileType> BusinessProviderProfileTypes { get; set; }
+    public virtual DbSet<BusinessPartnerProviderProfileContactPerson> BusinessPartnerProviderProfileContactPeople { get; set; }
 
-    public virtual DbSet<BusinessProviderTransportVehicle> BusinessProviderTransportVehicles { get; set; }
+    public virtual DbSet<BusinessPartnerProviderProfileType> BusinessPartnerProviderProfileTypes { get; set; }
 
-    public virtual DbSet<BusinessTransportVehicleStatusType> BusinessTransportVehicleStatusTypes { get; set; }
+    public virtual DbSet<BusinessPartnerTransportVehicleStatusType> BusinessPartnerTransportVehicleStatusTypes { get; set; }
+
+    public virtual DbSet<BusinessPartnerproviderTransportVehicle> BusinessPartnerproviderTransportVehicles { get; set; }
 
     public virtual DbSet<CustomerContactPerson> CustomerContactPeople { get; set; }
 
@@ -61,26 +63,6 @@ public partial class DataBaseContext : DbContext
     public virtual DbSet<SettingDispatchBranch> SettingDispatchBranches { get; set; }
 
     public virtual DbSet<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomers { get; set; }
-
-    public virtual DbSet<ShipmentExpense> ShipmentExpenses { get; set; }
-
-    public virtual DbSet<ShipmentExpenseType> ShipmentExpenseTypes { get; set; }
-
-    public virtual DbSet<ShipmentFreight> ShipmentFreights { get; set; }
-
-    public virtual DbSet<ShipmentFreightStatus> ShipmentFreightStatuses { get; set; }
-
-    public virtual DbSet<ShipmentFreightStatusLog> ShipmentFreightStatusLogs { get; set; }
-
-    public virtual DbSet<ShipmentFreightType> ShipmentFreightTypes { get; set; }
-
-    public virtual DbSet<ShipmentFuelOrder> ShipmentFuelOrders { get; set; }
-
-    public virtual DbSet<ShipmentFuelOrderType> ShipmentFuelOrderTypes { get; set; }
-
-    public virtual DbSet<ShipmentGasStation> ShipmentGasStations { get; set; }
-
-    public virtual DbSet<ShipmentProjectContract> ShipmentProjectContracts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql(BaseHelper.GetConnectionString());
@@ -222,12 +204,18 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.BirthDate).HasColumnName("birth_date");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Dni)
+                .HasMaxLength(15)
+                .HasColumnName("dni");
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
                 .HasColumnName("email");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
                 .HasColumnName("first_name");
+            entity.Property(e => e.Gender)
+                .HasMaxLength(1)
+                .HasColumnName("gender");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
@@ -264,6 +252,7 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.ExpirationDate).HasColumnName("expiration_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Token).HasColumnName("token");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -312,11 +301,11 @@ public partial class DataBaseContext : DbContext
                 .HasConstraintName("fk_auth_user_role_user_id");
         });
 
-        modelBuilder.Entity<BusinessPositionType>(entity =>
+        modelBuilder.Entity<BusinessPartnerPositionType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_business_position_type_id");
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_position_type_id");
 
-            entity.ToTable("business_position_type", "business");
+            entity.ToTable("business_partner_position_type", "business_partner");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
@@ -325,14 +314,14 @@ public partial class DataBaseContext : DbContext
                 .HasColumnName("name");
         });
 
-        modelBuilder.Entity<BusinessProviderDriver>(entity =>
+        modelBuilder.Entity<BusinessPartnerProviderDriver>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_business_provider_driver_id");
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_provider_driver_id");
 
-            entity.ToTable("business_provider_driver", "business");
+            entity.ToTable("business_partner_provider_driver", "business_partner");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BusinessProviderProfileId).HasColumnName("business_provider_profile_id");
+            entity.Property(e => e.BusinessPartnerProviderProfileId).HasColumnName("business_partner_provider_profile_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.DateOfBirth).HasColumnName("date_of_birth");
@@ -360,31 +349,32 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("phone");
 
-            entity.HasOne(d => d.BusinessProviderProfile).WithMany(p => p.BusinessProviderDrivers)
-                .HasForeignKey(d => d.BusinessProviderProfileId)
-                .HasConstraintName("fk_business_provider_driver_profile_business_provider_profile");
+            entity.HasOne(d => d.BusinessPartnerProviderProfile).WithMany(p => p.BusinessPartnerProviderDrivers)
+                .HasForeignKey(d => d.BusinessPartnerProviderProfileId)
+                .HasConstraintName("fk_business_partner_provider_driver_profile_business_provider_p");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessProviderDriverCreatedByNavigations)
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessPartnerProviderDriverCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_business_provider_driver_created_by");
+                .HasConstraintName("fk_business_partner_provider_driver_created_by");
 
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessProviderDriverModifiedByNavigations)
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessPartnerProviderDriverModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_business_provider_driver_modified_by");
+                .HasConstraintName("fk_business_partner_provider_driver_modified_by");
         });
 
-        modelBuilder.Entity<BusinessProviderProfile>(entity =>
+        modelBuilder.Entity<BusinessPartnerProviderProfile>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_business_provider_profile_id");
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_provider_profile_id");
 
-            entity.ToTable("business_provider_profile", "business");
+            entity.ToTable("business_partner_provider_profile", "business_partner");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.BusinessName)
                 .HasMaxLength(100)
                 .HasColumnName("business_name");
+            entity.Property(e => e.BusinessPartnerProviderProfileCategoryId).HasColumnName("business_partner_provider_profile_category_id");
             entity.Property(e => e.BusinessProviderProfileTypeId).HasColumnName("business_provider_profile_type_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
@@ -405,35 +395,53 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("phone");
 
-            entity.HasOne(d => d.BusinessProviderProfileType).WithMany(p => p.BusinessProviderProfiles)
+            entity.HasOne(d => d.BusinessPartnerProviderProfileCategory).WithMany(p => p.BusinessPartnerProviderProfiles)
+                .HasForeignKey(d => d.BusinessPartnerProviderProfileCategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_business_partner_provider_profile_category");
+
+            entity.HasOne(d => d.BusinessProviderProfileType).WithMany(p => p.BusinessPartnerProviderProfiles)
                 .HasForeignKey(d => d.BusinessProviderProfileTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_business_provider_profile_type");
+                .HasConstraintName("fk_business_partner_provider_profile_type");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessProviderProfileCreatedByNavigations)
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessPartnerProviderProfileCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_business_provider_profile_created_by");
+                .HasConstraintName("fk_business_partner_provider_profile_created_by");
 
-            entity.HasOne(d => d.GeneralCity).WithMany(p => p.BusinessProviderProfiles)
+            entity.HasOne(d => d.GeneralCity).WithMany(p => p.BusinessPartnerProviderProfiles)
                 .HasForeignKey(d => d.GeneralCityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_business_provider_profile_general_city_id");
+                .HasConstraintName("fk_business_partner_provider_profile_general_city_id");
 
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessProviderProfileModifiedByNavigations)
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessPartnerProviderProfileModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_business_provider_profile_modified_by");
+                .HasConstraintName("fk_business_partner_provider_profile_modified_by");
         });
 
-        modelBuilder.Entity<BusinessProviderProfileContactPerson>(entity =>
+        modelBuilder.Entity<BusinessPartnerProviderProfileCategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_provider_profile_contact_person_id");
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_provider_profile_category_id");
 
-            entity.ToTable("business_provider_profile_contact_person", "business");
+            entity.ToTable("business_partner_provider_profile_category", "business_partner");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BusinessPositionTypeId).HasColumnName("business_position_type_id");
-            entity.Property(e => e.BusinessProviderProfileId).HasColumnName("business_provider_profile_id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<BusinessPartnerProviderProfileContactPerson>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_provider_profile_contact_person_id");
+
+            entity.ToTable("business_partner_provider_profile_contact_person", "business_partner");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BusinessPartnerPositionTypeId).HasColumnName("business_partner_position_type_id");
+            entity.Property(e => e.BusinessPartnerProviderProfileId).HasColumnName("business_partner_provider_profile_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.Email)
@@ -455,31 +463,31 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("phone");
 
-            entity.HasOne(d => d.BusinessPositionType).WithMany(p => p.BusinessProviderProfileContactPeople)
-                .HasForeignKey(d => d.BusinessPositionTypeId)
+            entity.HasOne(d => d.BusinessPartnerPositionType).WithMany(p => p.BusinessPartnerProviderProfileContactPeople)
+                .HasForeignKey(d => d.BusinessPartnerPositionTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_provider_profile_contact_person_business_position_type_id");
+                .HasConstraintName("fk_business_partner_provider_profile_contact_person_position_ty");
 
-            entity.HasOne(d => d.BusinessProviderProfile).WithMany(p => p.BusinessProviderProfileContactPeople)
-                .HasForeignKey(d => d.BusinessProviderProfileId)
+            entity.HasOne(d => d.BusinessPartnerProviderProfile).WithMany(p => p.BusinessPartnerProviderProfileContactPeople)
+                .HasForeignKey(d => d.BusinessPartnerProviderProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_provider_profile_contact_person");
+                .HasConstraintName("fk_business_partner_provider_profile_contact_person");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessProviderProfileContactPersonCreatedByNavigations)
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessPartnerProviderProfileContactPersonCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_provider_profile_contact_person_created_by");
+                .HasConstraintName("fk_business_partner_provider_profile_contact_person_created_by");
 
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessProviderProfileContactPersonModifiedByNavigations)
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessPartnerProviderProfileContactPersonModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_provider_profile_contact_person_modified_by");
+                .HasConstraintName("fk_business_partner_provider_profile_contact_person_modified_by");
         });
 
-        modelBuilder.Entity<BusinessProviderProfileType>(entity =>
+        modelBuilder.Entity<BusinessPartnerProviderProfileType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_business_provider_profile_type_id");
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_provider_profile_type_id");
 
-            entity.ToTable("business_provider_profile_type", "business");
+            entity.ToTable("business_partner_provider_profile_type", "business_partner");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
@@ -488,19 +496,32 @@ public partial class DataBaseContext : DbContext
                 .HasColumnName("name");
         });
 
-        modelBuilder.Entity<BusinessProviderTransportVehicle>(entity =>
+        modelBuilder.Entity<BusinessPartnerTransportVehicleStatusType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_business_provider_transport_vehicle_id");
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_transport_vehicle_status_type_id");
 
-            entity.ToTable("business_provider_transport_vehicle", "business");
+            entity.ToTable("business_partner_transport_vehicle_status_type", "business_partner");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<BusinessPartnerproviderTransportVehicle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_provider_transport_vehicle_id");
+
+            entity.ToTable("business_partnerprovider_transport_vehicle", "business_partner");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Axles).HasColumnName("axles");
             entity.Property(e => e.Brand)
                 .HasMaxLength(50)
                 .HasColumnName("brand");
-            entity.Property(e => e.BusinessProviderDriverId).HasColumnName("business_provider_driver_id");
-            entity.Property(e => e.BusinessProviderProfileId).HasColumnName("business_provider_profile_id");
+            entity.Property(e => e.BusinessPartnerProviderDriverId).HasColumnName("business_partner_provider_driver_id");
+            entity.Property(e => e.BusinessPartnerProviderProfileId).HasColumnName("business_partner_provider_profile_id");
             entity.Property(e => e.Color)
                 .HasMaxLength(30)
                 .HasColumnName("color");
@@ -521,36 +542,23 @@ public partial class DataBaseContext : DbContext
                 .HasColumnName("vin");
             entity.Property(e => e.Year).HasColumnName("year");
 
-            entity.HasOne(d => d.BusinessProviderDriver).WithMany(p => p.BusinessProviderTransportVehicles)
-                .HasForeignKey(d => d.BusinessProviderDriverId)
-                .HasConstraintName("fk_business_provider_vehicle_driver_business_provider_driver");
+            entity.HasOne(d => d.BusinessPartnerProviderDriver).WithMany(p => p.BusinessPartnerproviderTransportVehicles)
+                .HasForeignKey(d => d.BusinessPartnerProviderDriverId)
+                .HasConstraintName("fk_business_partner_provider_vehicle_driver_business_provider_d");
 
-            entity.HasOne(d => d.BusinessProviderProfile).WithMany(p => p.BusinessProviderTransportVehicles)
-                .HasForeignKey(d => d.BusinessProviderProfileId)
+            entity.HasOne(d => d.BusinessPartnerProviderProfile).WithMany(p => p.BusinessPartnerproviderTransportVehicles)
+                .HasForeignKey(d => d.BusinessPartnerProviderProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_business_provider_vehicle_profile_business_provider_profile");
+                .HasConstraintName("fk_business_partner_provider_vehicle_profile_business_provider_");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessProviderTransportVehicleCreatedByNavigations)
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessPartnerproviderTransportVehicleCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_business_provider_vehicle_created_by");
+                .HasConstraintName("fk_business_partner_provider_vehicle_created_by");
 
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessProviderTransportVehicleModifiedByNavigations)
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessPartnerproviderTransportVehicleModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_business_provider_vehicle_modified_by");
-        });
-
-        modelBuilder.Entity<BusinessTransportVehicleStatusType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_business_transport_vehicle_status_type_id");
-
-            entity.ToTable("business_transport_vehicle_status_type", "business");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
+                .HasConstraintName("fk_business_partner_provider_vehicle_modified_by");
         });
 
         modelBuilder.Entity<CustomerContactPerson>(entity =>
@@ -884,334 +892,6 @@ public partial class DataBaseContext : DbContext
                 .HasForeignKey(d => d.SettingDispatchBranchId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_setting_freight_dispatch_branch");
-        });
-
-        modelBuilder.Entity<ShipmentExpense>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_expense_id");
-
-            entity.ToTable("shipment_expense", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount)
-                .HasPrecision(12, 2)
-                .HasColumnName("amount");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.Currency)
-                .HasMaxLength(10)
-                .HasColumnName("currency");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.ExpenseDate).HasColumnName("expense_date");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.ShipmentExpenseTypeId).HasColumnName("shipment_expense_type_id");
-            entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentExpenseCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_expense_created_by");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentExpenseModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_expense_modified_by");
-
-            entity.HasOne(d => d.ShipmentExpenseType).WithMany(p => p.ShipmentExpenses)
-                .HasForeignKey(d => d.ShipmentExpenseTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_expense_shipment_expense_type_id");
-
-            entity.HasOne(d => d.ShipmentFreight).WithMany(p => p.ShipmentExpenses)
-                .HasForeignKey(d => d.ShipmentFreightId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_expense_shipment_freight_id");
-        });
-
-        modelBuilder.Entity<ShipmentExpenseType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_expense_type_id");
-
-            entity.ToTable("shipment_expense_type", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ShipmentFreight>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_freight_id");
-
-            entity.ToTable("shipment_freight", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Cost)
-                .HasPrecision(12, 2)
-                .HasColumnName("cost");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.CustomerWarehouseId).HasColumnName("customer_warehouse_id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.Observations).HasColumnName("observations");
-            entity.Property(e => e.Price)
-                .HasPrecision(12, 2)
-                .HasColumnName("price");
-            entity.Property(e => e.ProviderDriverId).HasColumnName("provider_driver_id");
-            entity.Property(e => e.ProviderTransportVehicleId).HasColumnName("provider_transport_vehicle_id");
-            entity.Property(e => e.ShipmentFreightStatusId).HasColumnName("shipment_freight_status_id");
-            entity.Property(e => e.ShipmentFreightTypeId).HasColumnName("shipment_freight_type_id");
-            entity.Property(e => e.ShipmentProjectContractId).HasColumnName("shipment_project_contract_id");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentFreightCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_created_by");
-
-            entity.HasOne(d => d.CustomerWarehouse).WithMany(p => p.ShipmentFreights)
-                .HasForeignKey(d => d.CustomerWarehouseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_customer_warehouse");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentFreightModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_freight_modified_by");
-
-            entity.HasOne(d => d.ProviderDriver).WithMany(p => p.ShipmentFreights)
-                .HasForeignKey(d => d.ProviderDriverId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_business_provider_driver");
-
-            entity.HasOne(d => d.ProviderTransportVehicle).WithMany(p => p.ShipmentFreights)
-                .HasForeignKey(d => d.ProviderTransportVehicleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_provider_transport_vehicle");
-
-            entity.HasOne(d => d.ShipmentFreightStatus).WithMany(p => p.ShipmentFreights)
-                .HasForeignKey(d => d.ShipmentFreightStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_status");
-
-            entity.HasOne(d => d.ShipmentFreightType).WithMany(p => p.ShipmentFreights)
-                .HasForeignKey(d => d.ShipmentFreightTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_type");
-
-            entity.HasOne(d => d.ShipmentProjectContract).WithMany(p => p.ShipmentFreights)
-                .HasForeignKey(d => d.ShipmentProjectContractId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_project_contract");
-        });
-
-        modelBuilder.Entity<ShipmentFreightStatus>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_freight_status_id");
-
-            entity.ToTable("shipment_freight_status", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ShipmentFreightStatusLog>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_freight_status_log_id");
-
-            entity.ToTable("shipment_freight_status_log", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Comments).HasColumnName("comments");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
-            entity.Property(e => e.ShipmentFreightStatusId).HasColumnName("shipment_freight_status_id");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentFreightStatusLogCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_status_log_created_by");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentFreightStatusLogModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_freight_status_log_modified_by");
-
-            entity.HasOne(d => d.ShipmentFreight).WithMany(p => p.ShipmentFreightStatusLogs)
-                .HasForeignKey(d => d.ShipmentFreightId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_status_log_freight");
-
-            entity.HasOne(d => d.ShipmentFreightStatus).WithMany(p => p.ShipmentFreightStatusLogs)
-                .HasForeignKey(d => d.ShipmentFreightStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_freight_status_log_status");
-        });
-
-        modelBuilder.Entity<ShipmentFreightType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_freight_type_id");
-
-            entity.ToTable("shipment_freight_type", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ShipmentFuelOrder>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_fuel_order_id");
-
-            entity.ToTable("shipment_fuel_order", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CostPerGallon)
-                .HasPrecision(12, 2)
-                .HasColumnName("cost_per_gallon");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.Currency)
-                .HasMaxLength(10)
-                .HasColumnName("currency");
-            entity.Property(e => e.FuelOrderIssuerId).HasColumnName("fuel_order_issuer_id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.IssuedDate).HasColumnName("issued_date");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.ProviderDriverId).HasColumnName("provider_driver_id");
-            entity.Property(e => e.ProviderTransportVehicleId).HasColumnName("provider_transport_vehicle_id");
-            entity.Property(e => e.QuantityGallon)
-                .HasPrecision(12, 2)
-                .HasColumnName("quantity_gallon");
-            entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
-            entity.Property(e => e.ShipmentFuelOrderTypeId).HasColumnName("shipment_fuel_order_type_id");
-            entity.Property(e => e.ShipmentGasStationId).HasColumnName("shipment_gas_station_id");
-            entity.Property(e => e.TotalCost)
-                .HasPrecision(12, 2)
-                .HasColumnName("total_cost");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentFuelOrderCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_created_by");
-
-            entity.HasOne(d => d.FuelOrderIssuer).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.FuelOrderIssuerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_fuel_order_issuer_id");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentFuelOrderModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_fuel_order_modified_by");
-
-            entity.HasOne(d => d.ProviderDriver).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ProviderDriverId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_provider_driver_id");
-
-            entity.HasOne(d => d.ProviderTransportVehicle).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ProviderTransportVehicleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_provider_transport_vehicle_id");
-
-            entity.HasOne(d => d.ShipmentFreight).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ShipmentFreightId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_shipment_freight_id");
-
-            entity.HasOne(d => d.ShipmentFuelOrderType).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ShipmentFuelOrderTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_shipment_fuel_order_type_id");
-
-            entity.HasOne(d => d.ShipmentGasStation).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ShipmentGasStationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_shipment_gas_station_id");
-        });
-
-        modelBuilder.Entity<ShipmentFuelOrderType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_fuel_order_type_id");
-
-            entity.ToTable("shipment_fuel_order_type", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ShipmentGasStation>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_gas_station_id");
-
-            entity.ToTable("shipment_gas_station", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Address).HasColumnName("address");
-            entity.Property(e => e.GeneralCityId).HasColumnName("general_city_id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-
-            entity.HasOne(d => d.GeneralCity).WithMany(p => p.ShipmentGasStations)
-                .HasForeignKey(d => d.GeneralCityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_gas_station_general_city_id");
-        });
-
-        modelBuilder.Entity<ShipmentProjectContract>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_project_contract_id");
-
-            entity.ToTable("shipment_project_contract", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ContractNumber).HasColumnName("contract_number");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.CustomerProfileId).HasColumnName("customer_profile_id");
-            entity.Property(e => e.EndDate).HasColumnName("end_date");
-            entity.Property(e => e.ExpectedFreight).HasColumnName("expected_freight");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.SettingDispatchBranchId).HasColumnName("setting_dispatch_branch_id");
-            entity.Property(e => e.StartDate).HasColumnName("start_date");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentProjectContractCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_contract_created_by");
-
-            entity.HasOne(d => d.CustomerProfile).WithMany(p => p.ShipmentProjectContracts)
-                .HasForeignKey(d => d.CustomerProfileId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_contract_customer_profile");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentProjectContractModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_contract_modified_by");
-
-            entity.HasOne(d => d.SettingDispatchBranch).WithMany(p => p.ShipmentProjectContracts)
-                .HasForeignKey(d => d.SettingDispatchBranchId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_contract_setting_dispatch_branch");
         });
 
         OnModelCreatingPartial(modelBuilder);

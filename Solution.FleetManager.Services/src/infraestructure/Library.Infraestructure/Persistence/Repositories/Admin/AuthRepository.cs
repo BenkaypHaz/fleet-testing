@@ -168,7 +168,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                     Token = encriptedToken,
                     UserId = userData.Id,
                     ExpirationDate = expirationDate,
-                    //IsActive = true
+                    IsActive = true
                 };
 
                 // Agregar token al contexto
@@ -176,8 +176,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 #endregion
 
                 #region 2. Desactivar usuario y activar reseteo de contraseña
-                //userData.ResetPassword = true;
-                //userData.IsActive = false;
+                userData.ResetPassword = true;
+                userData.IsActive = false;
                 #endregion
 
                 // Guardar cambios en la base de datos
@@ -320,8 +320,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 if (tokenData.UserId != payload.Id)
                     return new GenericHandlerResponse<long>(403, CustomMessage: $"El token no corresponde al usuario solicitado.");
 
-                //if (!tokenData.IsActive)
-                //    return new GenericHandlerResponse<long>(400, CustomMessage: $"El token ya ha sido utilizado.");
+                if (!tokenData.IsActive)
+                    return new GenericHandlerResponse<long>(400, CustomMessage: $"El token ya ha sido utilizado.");
 
                 if (tokenData.ExpirationDate < DateTime.UtcNow)
                     return new GenericHandlerResponse<long>(400, CustomMessage: $"El token ha expirado.");
