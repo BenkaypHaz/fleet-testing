@@ -150,34 +150,6 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
         }
 
-        //public async Task<GenericHandlerResponse<long>> Update(RolesUpdateDTO payload)
-        //{
-        //    try
-        //    {
-
-        //        var roleData = await _context.Roles.FindAsync(payload.Id);
-
-        //        if (roleData == null)
-        //            return new GenericHandlerResponse<long>(404, CustomMessage: "No se encontró información del rol solicitado.");
-
-
-        //        roleData.Description = payload.Description;
-        //        roleData.ModifiedBy = payload.ModifiedBy;
-        //        roleData.ModifiedDate = DateTime.UtcNow;
-        //        roleData.IsActive = payload.IsActive;
-
-        //        await _context.SaveChangesAsync();
-
-
-        //        return new GenericHandlerResponse<long>(200, CustomMessage: "¡Rol actualizado con éxito!", data: payload.Id);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await BaseHelper.SaveErrorLog(ex);
-        //        return new GenericHandlerResponse<long>(500, ExceptionMessage: ex.Message);
-        //    }
-        //}
-
         public async Task<GenericHandlerResponse<long>> AddAuthorizations(AddAuthorizationDTO payload)
         {
 
@@ -211,40 +183,6 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
         }
 
-        //public async Task<GenericHandlerResponse<long>> RemoveAuthorizations(RemoveAuthorizationDTO payload)
-        //{
-        //    try
-        //    {
-        //        var roleData = await _context.Roles.FindAsync(payload.RoleId);
-
-        //        if (roleData == null)
-        //            return new GenericHandlerResponse<long>(404, CustomMessage: "No se encontró información del rol solicitado.");
-
-        //        // Buscar las authorizaciones registradas para el rol
-        //        var existingAuthorizationsRoles = await _context.AuthorizationsRoles
-        //            .AsNoTracking()
-        //            .Where(auth => auth.RoleId == payload.RoleId)
-        //            .ToListAsync();
-
-        //        if (payload.AuthsId == null)
-        //            return new GenericHandlerResponse<long>(200, data: payload.RoleId);
-
-        //        // Eliminar las authorizaciones que ya no están en la lista
-        //        var authorizationToRemove = existingAuthorizationsRoles
-        //            .Where(auth => payload.AuthsId.Contains(auth.AuthId))
-        //            .ToList();
-
-        //        _context.AuthorizationsRoles.RemoveRange(authorizationToRemove);
-        //        await _context.SaveChangesAsync();
-
-        //        return new GenericHandlerResponse<long>(200, data: payload.RoleId);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await BaseHelper.SaveErrorLog(ex);
-        //        return new GenericHandlerResponse<long>(500, ExceptionMessage: ex.Message);
-        //    }
-        //}
 
     }
 }
