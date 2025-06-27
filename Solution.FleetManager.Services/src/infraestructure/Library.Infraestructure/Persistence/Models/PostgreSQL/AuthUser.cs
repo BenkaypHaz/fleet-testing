@@ -7,6 +7,10 @@ public partial class AuthUser
 {
     public long Id { get; set; }
 
+    public string Dni { get; set; } = null!;
+
+    public string? Gender { get; set; }
+
     public string FirstName { get; set; } = null!;
 
     public string LastName { get; set; } = null!;
@@ -61,21 +65,21 @@ public partial class AuthUser
 
     public virtual ICollection<AuthUserRole> AuthUserRoleUsers { get; set; } = new List<AuthUserRole>();
 
-    public virtual ICollection<BusinessProviderDriver> BusinessProviderDriverCreatedByNavigations { get; set; } = new List<BusinessProviderDriver>();
+    public virtual ICollection<BusinessPartnerProviderDriver> BusinessPartnerProviderDriverCreatedByNavigations { get; set; } = new List<BusinessPartnerProviderDriver>();
 
-    public virtual ICollection<BusinessProviderDriver> BusinessProviderDriverModifiedByNavigations { get; set; } = new List<BusinessProviderDriver>();
+    public virtual ICollection<BusinessPartnerProviderDriver> BusinessPartnerProviderDriverModifiedByNavigations { get; set; } = new List<BusinessPartnerProviderDriver>();
 
-    public virtual ICollection<BusinessProviderProfileContactPerson> BusinessProviderProfileContactPersonCreatedByNavigations { get; set; } = new List<BusinessProviderProfileContactPerson>();
+    public virtual ICollection<BusinessPartnerProviderProfileContactPerson> BusinessPartnerProviderProfileContactPersonCreatedByNavigations { get; set; } = new List<BusinessPartnerProviderProfileContactPerson>();
 
-    public virtual ICollection<BusinessProviderProfileContactPerson> BusinessProviderProfileContactPersonModifiedByNavigations { get; set; } = new List<BusinessProviderProfileContactPerson>();
+    public virtual ICollection<BusinessPartnerProviderProfileContactPerson> BusinessPartnerProviderProfileContactPersonModifiedByNavigations { get; set; } = new List<BusinessPartnerProviderProfileContactPerson>();
 
-    public virtual ICollection<BusinessProviderProfile> BusinessProviderProfileCreatedByNavigations { get; set; } = new List<BusinessProviderProfile>();
+    public virtual ICollection<BusinessPartnerProviderProfile> BusinessPartnerProviderProfileCreatedByNavigations { get; set; } = new List<BusinessPartnerProviderProfile>();
 
-    public virtual ICollection<BusinessProviderProfile> BusinessProviderProfileModifiedByNavigations { get; set; } = new List<BusinessProviderProfile>();
+    public virtual ICollection<BusinessPartnerProviderProfile> BusinessPartnerProviderProfileModifiedByNavigations { get; set; } = new List<BusinessPartnerProviderProfile>();
 
-    public virtual ICollection<BusinessProviderTransportVehicle> BusinessProviderTransportVehicleCreatedByNavigations { get; set; } = new List<BusinessProviderTransportVehicle>();
+    public virtual ICollection<BusinessPartnerproviderTransportVehicle> BusinessPartnerproviderTransportVehicleCreatedByNavigations { get; set; } = new List<BusinessPartnerproviderTransportVehicle>();
 
-    public virtual ICollection<BusinessProviderTransportVehicle> BusinessProviderTransportVehicleModifiedByNavigations { get; set; } = new List<BusinessProviderTransportVehicle>();
+    public virtual ICollection<BusinessPartnerproviderTransportVehicle> BusinessPartnerproviderTransportVehicleModifiedByNavigations { get; set; } = new List<BusinessPartnerproviderTransportVehicle>();
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
@@ -116,24 +120,4 @@ public partial class AuthUser
     public virtual ICollection<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomerCreatedByNavigations { get; set; } = new List<SettingFreightPricingPerCustomer>();
 
     public virtual ICollection<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomerModifiedByNavigations { get; set; } = new List<SettingFreightPricingPerCustomer>();
-
-    public virtual ICollection<ShipmentExpense> ShipmentExpenseCreatedByNavigations { get; set; } = new List<ShipmentExpense>();
-
-    public virtual ICollection<ShipmentExpense> ShipmentExpenseModifiedByNavigations { get; set; } = new List<ShipmentExpense>();
-
-    public virtual ICollection<ShipmentFreight> ShipmentFreightCreatedByNavigations { get; set; } = new List<ShipmentFreight>();
-
-    public virtual ICollection<ShipmentFreight> ShipmentFreightModifiedByNavigations { get; set; } = new List<ShipmentFreight>();
-
-    public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogCreatedByNavigations { get; set; } = new List<ShipmentFreightStatusLog>();
-
-    public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogModifiedByNavigations { get; set; } = new List<ShipmentFreightStatusLog>();
-
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrderCreatedByNavigations { get; set; } = new List<ShipmentFuelOrder>();
-
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrderModifiedByNavigations { get; set; } = new List<ShipmentFuelOrder>();
-
-    public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractCreatedByNavigations { get; set; } = new List<ShipmentProjectContract>();
-
-    public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractModifiedByNavigations { get; set; } = new List<ShipmentProjectContract>();
 }

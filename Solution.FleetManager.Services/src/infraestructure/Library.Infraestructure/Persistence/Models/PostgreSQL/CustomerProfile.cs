@@ -40,6 +40,4 @@ public partial class CustomerProfile
     public virtual GeneralCity GeneralCity { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
-
-    public virtual ICollection<ShipmentProjectContract> ShipmentProjectContracts { get; set; } = new List<ShipmentProjectContract>();
 }

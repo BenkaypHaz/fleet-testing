@@ -40,6 +40,4 @@ public partial class CustomerWarehouse
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
     public virtual ICollection<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomers { get; set; } = new List<SettingFreightPricingPerCustomer>();
-
-    public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
 }

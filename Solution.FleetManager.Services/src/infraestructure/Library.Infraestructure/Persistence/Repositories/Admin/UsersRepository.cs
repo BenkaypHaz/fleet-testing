@@ -34,7 +34,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                     {
                         query = query.Where(a =>
                             a.Id.ToString().Equals(value) || a.Id.ToString().Contains(value) ||
-                            //a.Dni.Equals(value) || a.Dni.Contains(value) ||
+                            a.Dni.Equals(value) || a.Dni.Contains(value) ||
                             a.FirstName.Equals(value) || a.FirstName.Contains(value) ||
                             a.LastName.Equals(value) || a.LastName.Contains(value) ||
                             a.Email.Equals(value) || a.Email.Contains(value) ||
@@ -52,13 +52,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                         Id = c.Id,
                         UserName = c.UserName,
                         Email = c.Email,
-                        //Dni = c.Dni,
+                        Dni = c.Dni,
                         FirstName = c.FirstName,
                         LastName = c.LastName,
                         ProfilePicture = c.ProfilePicture,
                         PhoneNumber = c.PhoneNumber,
-                        BirthDate = c.BirthDate, //se cambio el tipo de dato
-                        //Gender = c.Gender,
+                        BirthDate = c.BirthDate, 
+                        Gender = c.Gender,
                         CreatedBy = c.CreatedBy,
                         CreatedDate = c.CreatedDate,
                         ModifiedBy = c.ModifiedBy,
@@ -89,7 +89,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                         Id = user.Id,
                         UserName = user.UserName,
                         Email = user.Email,
-                        //Dni = user.Dni,
+                        Dni = user.Dni,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         ProfilePicture = user.ProfilePicture,
@@ -147,8 +147,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
         {
             try
             {
-                //if (await _context.AuthUsers.AnyAsync(x => x.Dni == payload.Dni))
-                //    return new GenericHandlerResponse<long>(409, CustomMessage: $"El NDI: {payload.Dni} ya existe en el sistema.");
+                if (await _context.AuthUsers.AnyAsync(x => x.Dni == payload.Dni))
+                    return new GenericHandlerResponse<long>(409, CustomMessage: $"El NDI: {payload.Dni} ya existe en el sistema.");
                 if (await _context.AuthUsers.AnyAsync(x => x.UserName == payload.UserName))
                     return new GenericHandlerResponse<long>(409, CustomMessage: $"El nombre de usuario: {payload.UserName} ya existe en el sistema.");
                 if (await _context.AuthUsers.AnyAsync(x => x.UserName == payload.UserName))
@@ -181,13 +181,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 {
                     UserName = payload.UserName,
                     Email = payload.Email,
-                    //Dni = payload.Dni,
+                    Dni = payload.Dni,
                     FirstName = payload.FirstName,
                     LastName = payload.LastName,
                     ProfilePicture = mediaUrl.IsNullOrEmpty()?null: mediaUrl,
                     PhoneNumber = payload.PhoneNumber,
                     BirthDate = payload.BirthDate.HasValue ? payload.BirthDate.Value : null,
-                    //Gender = payload.Gender,
+                    Gender = payload.Gender,
                     Password = PasswordHelper.HashPassword(payload.Password),
                     ResetPassword = false,
                     CreatedBy = usuId,
@@ -358,13 +358,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 #region 4. Actualizar registro en la base de datos
 
                 UserData.Email = payload.Email;
-                //UserData.Dni = payload.Dni;
+                UserData.Dni = payload.Dni;
                 UserData.FirstName = payload.FirstName;
                 UserData.LastName = payload.LastName;
                 UserData.ProfilePicture = string.IsNullOrEmpty(mediaUrl) ? UserData.ProfilePicture : mediaUrl;
                 UserData.PhoneNumber = payload.PhoneNumber;
                 UserData.BirthDate = payload.BirthDate.HasValue ? payload.BirthDate.Value : null;
-                //UserData.Gender = payload.Gender;
+                UserData.Gender = payload.Gender;
                 UserData.ModifiedBy = usuId;
                 UserData.ModifiedDate = currentDate;
                 UserData.IsActive = payload.IsActive;
