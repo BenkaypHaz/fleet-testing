@@ -6,6 +6,8 @@ services:
       - FRONTEND_HOST=${FRONTEND_HOST}
       - SERVICES_HOST=${SERVICES_HOST}
       - TZ=${TIMEZONE}
+      - SENTRY_KEY=${SENTRY_KEY}
+
     # volumes:
     #   - ./media:/app/media
     ports:

@@ -15,6 +15,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
 
+SentrySdk.Init(options =>
+{
+    options.Dsn = BaseHelper.GetEnvVariable("SENTRY_KEY");
+    options.Debug = true;
+    options.SendDefaultPii = true;
+    options.TracesSampleRate = 1.0f;
+    options.ProfilesSampleRate = 1.0f;
+});
+
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(BaseHelper.GetSha256(BaseHelper.GetConnectionString())));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -100,6 +109,8 @@ builder.Services.AddDbContext<DataBaseContext>(options => options.UseNpgsql(Base
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
+
 
 if (app.Environment.IsDevelopment())
 {

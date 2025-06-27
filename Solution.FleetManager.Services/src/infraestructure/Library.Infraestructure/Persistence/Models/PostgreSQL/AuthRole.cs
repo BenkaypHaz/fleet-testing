@@ -26,4 +26,5 @@ public partial class AuthRole
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
+
 }

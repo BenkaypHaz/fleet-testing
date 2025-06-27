@@ -23,8 +23,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
         public async Task<GenericHandlerResponse<List<ModulesReadDTO>>> Get()
         {
-            try
-            {
+
                 //obtener todos los modulos
                 var modules = await _context.AuthModules
                     .Include(module => module.CreatedByNavigation)
@@ -101,18 +100,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                     .CountAsync();
 
                 return new GenericHandlerResponse<List<ModulesReadDTO>>(200, data, allRegistersCount);
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<List<ModulesReadDTO>>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<AuthorizationsReadDTO>> GetById(long authorizationId)
         {
-            try
-            {
+
                 var data = await _context.AuthAuthorizations
                     .Where(x => x.Id == authorizationId)
                     .Include(authorization => authorization.CreatedByNavigation)
@@ -133,12 +126,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                     .FirstOrDefaultAsync();
 
                 return new GenericHandlerResponse<AuthorizationsReadDTO>(200, data);
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<AuthorizationsReadDTO>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
     }

@@ -22,8 +22,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
         public async Task<GenericHandlerResponse<List<GenericDropDown>>> GetStates()
         {
-            try
-            {
+
                 var data = await _context.GeneralRegions
                     .AsNoTracking()
                     .Select(x => new GenericDropDown
@@ -32,18 +31,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                         Name = x.Name,
                     }).ToListAsync();
                 return new GenericHandlerResponse<List<GenericDropDown>>(200, data, data.Count());
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<List<GenericDropDown>>(500, ExceptionMessage: Ex.Message);
-            }
+            
+
         }
 
         public async Task<GenericHandlerResponse<List<GenericDropDown>>> GetCities(long regionId)
         {
-            try
-            {
+
                 var data = await _context.GeneralCities
                     .AsNoTracking()
                     .Where(x => x.RegionId == regionId)
@@ -53,12 +47,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                         Name = x.Name,
                     }).ToListAsync();
                 return new GenericHandlerResponse<List<GenericDropDown>>(200, data, data.Count());
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<List<GenericDropDown>>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
     }

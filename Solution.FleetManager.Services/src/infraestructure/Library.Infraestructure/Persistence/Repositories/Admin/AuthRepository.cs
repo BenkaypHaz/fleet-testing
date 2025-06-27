@@ -26,8 +26,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
         public async Task<GenericHandlerResponse<string>> SignIn(SignInDTO payload)
         {
-            try
-            {
+
                 var userEntity = await _context.AuthUsers
                     .Where(user => user.UserName == payload.Username)
                     .FirstOrDefaultAsync();
@@ -111,19 +110,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
                 var bearerToken = new JwtSecurityTokenHandler().WriteToken(token);
                 return new GenericHandlerResponse<string>(201, CustomMessage: "¡Inicio de sesión realizado con éxito!", data: bearerToken);
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<string>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
 
         public async Task<GenericHandlerResponse<GetUserValidateInfoDTO>> ValidateUserUid(string uId)
         {
-            try
-            {
+
 
                 var userData = await _context.AuthUsers
                                     .AsNoTracking()
@@ -140,18 +133,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
                 return new GenericHandlerResponse<GetUserValidateInfoDTO>(200, data: userData);
 
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<GetUserValidateInfoDTO>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<int>> CreateUserForgotPwdToken(long id)
         {
-            try
-            {
+
 
                 var userData = await _context.AuthUsers
                     .AsNoTracking()
@@ -289,18 +276,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 //Return 201 Created
                 return new GenericHandlerResponse<int>(201, data: 1, CustomMessage: "Cambio de contraseña habilitado");
 
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<int>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<int>> ValidateForgotPwdToken(ValidateUserResetPasswordTokenDTO payload)
         {
-            try
-            {
+
 
                 var tokenData = await _context.AuthUserForgotPwdTokens
                     .Where(token => token.Token == BaseHelper.GetSha256(payload.Token.ToString()))
@@ -322,18 +303,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 //Return 201 Created
                 return new GenericHandlerResponse<int>(201, data: 1, CustomMessage: "Token verificado.");
 
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<int>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<long>> ResetPassword(ResetPasswordDTO payload)
         {
-            try
-            {
+
                 #region 1. Validar token
                 var tokenData = await _context.AuthUserForgotPwdTokens
                     .Where(token => token.Token == BaseHelper.GetSha256(payload.token.ToString()))
@@ -370,12 +345,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 #endregion
 
                 return new GenericHandlerResponse<long>(201, data: userData.Id, CustomMessage: "¡Contraseña actualizada con éxito!");
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<long>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
 

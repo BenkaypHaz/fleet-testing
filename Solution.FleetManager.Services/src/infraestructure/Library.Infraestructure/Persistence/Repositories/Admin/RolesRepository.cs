@@ -25,8 +25,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
         public async Task<GenericHandlerResponse<List<RolesReadDTO>>> Get(PaginationDTO paginationDTO)
         {
             var data = new List<RolesReadDTO>();
-            try
-            {
+
                 var query = _context.AuthRoles.AsNoTracking().AsQueryable();
 
                 if (!string.IsNullOrEmpty(paginationDTO.SearchValue))
@@ -56,20 +55,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                         IsActive = c.IsActive,
                     }).ToListAsync();
 
-                // Retorna 200 OK con la lista paginada
                 return new GenericHandlerResponse<List<RolesReadDTO>>(200, data: data, totalRecords);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericHandlerResponse<List<RolesReadDTO>>(500, ExceptionMessage: ex.Message);
-            }
+            
         }
 
         public async Task<GenericHandlerResponse<RolesReadFirstDTO>> GetById(long id)
         {
-            try
-            {
+
                 #region 1. Obtener informacion del rol
                 var rol = await _context.AuthRoles
                     .Where(role => role.Id == id)
@@ -132,18 +124,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
                 // Retorna 200 OK con la lista paginada
                 return new GenericHandlerResponse<RolesReadFirstDTO>(200, data: rol);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericHandlerResponse<RolesReadFirstDTO>(500, ExceptionMessage: ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<long>> Create(RolesCreateDTO payload,long userId)
         {
-            try
-            {
+
                 var model = new AuthRole
                 {
                     Description = payload.Description,
@@ -161,12 +147,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 await _context.SaveChangesAsync();
 
                 return new GenericHandlerResponse<long>(200, CustomMessage: "¡Rol creado con éxito!", data: model.Id);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericHandlerResponse<long>(500, ExceptionMessage: ex.Message);
-            }
+
         }
 
         //public async Task<GenericHandlerResponse<long>> Update(RolesUpdateDTO payload)
@@ -199,8 +180,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
         public async Task<GenericHandlerResponse<long>> AddAuthorizations(AddAuthorizationDTO payload)
         {
-            try
-            {
+
                 var roleData = await _context.AuthRoles.FindAsync(payload.RoleId);
 
                 if (roleData == null)
@@ -228,12 +208,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 await _context.SaveChangesAsync();
 
                 return new GenericHandlerResponse<long>(201, data: payload.RoleId);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericHandlerResponse<long>(500, ExceptionMessage: ex.Message);
-            }
+
         }
 
         //public async Task<GenericHandlerResponse<long>> RemoveAuthorizations(RemoveAuthorizationDTO payload)

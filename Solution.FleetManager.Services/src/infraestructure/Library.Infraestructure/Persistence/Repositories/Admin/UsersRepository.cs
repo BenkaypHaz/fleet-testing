@@ -23,8 +23,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
         public async Task<GenericHandlerResponse<List<UserReadDTO>>> Get(PaginationDTO paginationDTO)
         {
             var data = new List<UserReadDTO>();
-            try
-            {
+
                 var query = _context.AuthUsers.AsNoTracking().AsQueryable();
 
                 if (!string.IsNullOrEmpty(paginationDTO.SearchValue))
@@ -68,19 +67,13 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
                 // Retorna 200 OK con la lista paginada
                 return new GenericHandlerResponse<List<UserReadDTO>>(200, data: data, totalRecords);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericHandlerResponse<List<UserReadDTO>>(500, ExceptionMessage: ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<UserReadFirstDTO>> GetById(long Id)
         {
             var user = new UserReadFirstDTO();
-            try
-            {
+       
                 #region 1. Obtener la informacion del usuario
                 user = await _context.AuthUsers
                     .Where(u => u.Id == Id)
@@ -136,17 +129,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 // Retorna 200 OK con la lista paginada
                 return new GenericHandlerResponse<UserReadFirstDTO>(200, data: user);
             }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericHandlerResponse<UserReadFirstDTO>(500, ExceptionMessage: ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<long>> Create(UsersCreateDTO payload, long usuId)
         {
-            try
-            {
+
                 //if (await _context.AuthUsers.AnyAsync(x => x.Dni == payload.Dni))
                 //    return new GenericHandlerResponse<long>(409, CustomMessage: $"El NDI: {payload.Dni} ya existe en el sistema.");
                 if (await _context.AuthUsers.AnyAsync(x => x.UserName == payload.UserName))
@@ -311,18 +299,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
                 //Return 201 Created
                 return new GenericHandlerResponse<long>(201, data: model.Id);
 
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<long>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
         public async Task<GenericHandlerResponse<long>> Update(UsersUpdateDTO payload, long usuId)
         {
-            try
-            {
+
                 var UserData = await _context.AuthUsers.FindAsync(payload.Id);
                 if (UserData == null)
                     return new GenericHandlerResponse<long>(404, CustomMessage: $"No se encontró la información del usuario solicitado.");
@@ -410,12 +392,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Admin
 
                 return new GenericHandlerResponse<long>(201, payload.Id);
 
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericHandlerResponse<long>(500, ExceptionMessage: Ex.Message);
-            }
+
         }
 
     }
