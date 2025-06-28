@@ -26,8 +26,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
         public async Task<GenericResponseHandler<string>> SignIn(SignInDTO payload)
         {
-            try
-            {
+           
                 var jwtPayload = await _context.AuthUsers
                     .Include(c => c.AuthUserRoleUsers)
                     .AsNoTracking()
@@ -81,12 +80,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 );
                 var bearerToken = new JwtSecurityTokenHandler().WriteToken(token);
                 return new GenericResponseHandler<string>(200, data: bearerToken);
-            }
-            catch (Exception Ex)
-            {
-                await BaseHelper.SaveErrorLog(Ex);
-                return new GenericResponseHandler<string>(500, null, exceptionMessage: Ex.Message);
-            }
+        
         }
 
         public async Task<GenericResponseHandler<UserValidateInfoReadDto>> ValidateUserUid(string uId)

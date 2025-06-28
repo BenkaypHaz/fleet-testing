@@ -25,8 +25,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
         public async Task<GenericResponseHandler<List<UserReadDTO>>> Get(PaginationDTO paginationDTO)
         {
             var data = new List<UserReadDTO>();
-            try
-            {
+          
                 var query = _context.AuthUsers.AsNoTracking().AsQueryable();
 
                 if (!string.IsNullOrEmpty(paginationDTO.SearchValue))
@@ -60,18 +59,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     }).ToListAsync();
 
                 return new GenericResponseHandler<List<UserReadDTO>>(200, data, totalRecords);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<List<UserReadDTO>>(500, null, exceptionMessage: ex.Message);
-            }
+         
         }
 
         public async Task<GenericResponseHandler<JwtSessionDto>> GetSessionContext(long id)
         {
-            try
-            {
+           
                 var data = await _context.AuthUsers
                     .Where(c => c.Id.Equals(id))
                     .Select(c => new JwtSessionDto
@@ -103,18 +96,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 data.Authorizations = authorizations;
 
                 return new GenericResponseHandler<JwtSessionDto>(200, data);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<JwtSessionDto>(500, null, exceptionMessage: ex.Message);
-            }
+           
         }
 
         public async Task<GenericResponseHandler<UserReadFirstDTO>> GetById(long id)
         {
-            try
-            {
+            
                 var data = await _context.AuthUsers
                     .Where(c => c.Id == id)
                     .Select(c => new UserReadFirstDTO
@@ -146,18 +133,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 var dataRecords = data != null ? 1 : 0;
 
                 return new GenericResponseHandler<UserReadFirstDTO>(200, data, dataRecords);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<UserReadFirstDTO>(500, null, exceptionMessage: ex.Message);
-            }
+          
         }
 
         public async Task<GenericResponseHandler<long?>> Create(UserCreateDto payload, long createdBy)
         {
-            try
-            {
+           
                 var user = await _context.AuthUsers.FirstOrDefaultAsync(x => x.UserName == payload.UserName);
                 if (user != null)
                     return new GenericResponseHandler<long?>(404, null, message: $"The username: {user.UserName} already exists in the database.");
@@ -217,18 +198,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 }
 
                 return new GenericResponseHandler<long?>(201, model.Id);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<long?>(500, null, exceptionMessage: ex.Message);
-            }
+           
         }
 
         public async Task<GenericResponseHandler<long?>> Update(long id, UserUpdateDto payload, long modifiedBy)
         {
-            try
-            {
+           
                 var user = await _context.AuthUsers.FindAsync(id);
                 if (user == null)
                     return new GenericResponseHandler<long?>(404, null);
@@ -289,18 +264,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 return new GenericResponseHandler<long?>(200, id);
 
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<long?>(500, null, exceptionMessage: ex.Message);
-            }
+          
         }
 
         public async Task<GenericResponseHandler<string>> CreateForgotPwdToken(long id, long modifiedBy)
         {
-            try
-            {
+           
                 var user = await _context.AuthUsers.FindAsync(id);
                 if (user == null)
                     return new GenericResponseHandler<string>(404, message: "The user you are trying to reset the password for does not exist.");
@@ -345,19 +314,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 //    return new GenericResponseHandler<string>(200);
                 //else
                 //    return new GenericResponseHandler<string>(500);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<string>(500);
-            }
+         
         }
 
         public async Task<GenericResponseHandler<long?>> UpdateStatus(long id, bool status, long modifiedBy)
         {
-            try
-            {
-                var user = await _context.AuthUsers.FindAsync(id);
+               var user = await _context.AuthUsers.FindAsync(id);
                 if (user == null)
                     return new GenericResponseHandler<long?>(404, null);
 
@@ -369,12 +331,6 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 return new GenericResponseHandler<long?>(200, id);
 
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<long?>(500, null, exceptionMessage: ex.Message);
-            }
         }
 
     }

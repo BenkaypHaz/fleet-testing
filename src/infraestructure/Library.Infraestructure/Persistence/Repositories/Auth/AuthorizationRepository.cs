@@ -20,8 +20,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
         public async Task<GenericResponseHandler<List<ModuleReadDto>>> Get()
         {
-            try
-            {
+           
                 var data = await _context.AuthModules
                     .Include(c => c.AuthAuthorizations)
                     .AsNoTracking()
@@ -29,12 +28,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     .ToListAsync();
 
                 return new GenericResponseHandler<List<ModuleReadDto>>(200, data, data.Count);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<List<ModuleReadDto>>(500, null, exceptionMessage: ex.Message);
-            }
+        
         }
     }
 }

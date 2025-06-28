@@ -23,8 +23,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
         public async Task<GenericResponseHandler<List<RoleReadDTO>>> Get(PaginationDTO paginationDTO)
         {
-            try
-            {
+          
                 var query = _context.AuthRoles
                     .AsNoTracking()
                     .AsQueryable();
@@ -48,18 +47,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     .ToListAsync();
 
                 return new GenericResponseHandler<List<RoleReadDTO>>(200, data, totalRecords);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<List<RoleReadDTO>>(500, null, exceptionMessage: ex.Message);
-            }
+     
         }
 
         public async Task<GenericResponseHandler<RoleReadFirstDto>> GetById(long id)
         {
-            try
-            {
+          
                 var data = await _context.AuthRoles
                     .Include(c => c.AuthRoleAuthorizations)
                     .AsNoTracking()
@@ -72,18 +65,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 var dataRecords = data != null ? 1 : 0;
 
                 return new GenericResponseHandler<RoleReadFirstDto>(200, data, dataRecords);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<RoleReadFirstDto>(500, exceptionMessage: ex.Message);
-            }
+          
         }
 
         public async Task<GenericResponseHandler<long?>> Create(RoleCreateDto payload, long userId)
         {
-            try
-            {
+           
                 var model = _mapper.Map<AuthRole>(payload);
                 model.CreatedBy = userId;
                 await _context.AuthRoles.AddAsync(model);
@@ -102,18 +89,12 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 await _context.SaveChangesAsync();
 
                 return new GenericResponseHandler<long?>(201, model.Id);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<long?>(500, null, exceptionMessage: ex.Message);
-            }
+          
         }
 
         public async Task<GenericResponseHandler<long?>> Update(long id, RoleUpdateDto payload, long userId)
         {
-            try
-            {
+          
                 var role = await _context.AuthRoles.FindAsync(id);
                 if (role == null)
                     return new GenericResponseHandler<long?>(404, null);
@@ -154,12 +135,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 await _context.SaveChangesAsync();
 
                 return new GenericResponseHandler<long?>(200, id);
-            }
-            catch (Exception ex)
-            {
-                await BaseHelper.SaveErrorLog(ex);
-                return new GenericResponseHandler<long?>(500, null, exceptionMessage: ex.Message);
-            }
+          
         }
 
     }

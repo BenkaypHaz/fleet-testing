@@ -1,5 +1,8 @@
 ﻿using Library.Infraestructure.Persistence.Repositories.Auth;
+using Library.Infraestructure.Persistence.Repositories.BusinessPartner;
+using Library.Infraestructure.Persistence.Repositories.Customer;
 using Library.Infraestructure.Persistence.Repositories.General;
+using Library.Infraestructure.Persistence.Repositories.Shipment;
 
 
 namespace Library.Infraestructure.Persistence.UnitOfWorks
@@ -17,6 +20,23 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         RegionRepository RegionRepository { get; }
         CityRepository CityRepository { get; }
 
+        #endregion
+
+        #region BusinessPartner
+        VehicleBrandRepository VehicleBrandRepository { get; }
+        VehicleModelRepository VehicleModelRepository { get; }
+        ProviderProfileRepository ProviderProfileRepository { get; }
+        ProviderDriverRepository ProviderDriverRepository { get; }
+        TransportVehicleRepository TransportVehicleRepository { get; }
+        #endregion
+
+        #region Customer
+        CustomerWarehouseRepository CustomerWarehouseRepository { get; }
+        #endregion
+
+
+        #region Shipment
+        ShipmentFreightRepository ShipmentFreightRepository { get; }
         #endregion
     }
 }

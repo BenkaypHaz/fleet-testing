@@ -108,6 +108,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<DataBaseContext>(options => options.UseNpgsql(BaseHelper.GetConnectionString()));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
