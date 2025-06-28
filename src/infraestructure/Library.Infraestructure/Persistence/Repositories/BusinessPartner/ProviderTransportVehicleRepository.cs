@@ -61,7 +61,7 @@ namespace Library.Infraestructure.Persistence.Repositories.BusinessPartner
 
             var model = _mapper.Map<BusinessPartnerProviderTransportVehicle>(payload);
             model.CreatedBy = userId;
-            model.CreatedDate = DateTime.UtcNow;
+            model.CreatedDate = DateTime.Now;
             model.IsActive = true;
 
             await _context.BusinessPartnerProviderTransportVehicles.AddAsync(model);

@@ -9,7 +9,7 @@ namespace Service.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "TransportProviderVehiclesController")]
-    [Route("api/[controller]")]
+    [Route("api/transport-provider-vehicles")]
     public class TransportProviderVehiclesController : BaseController
     {
         public TransportProviderVehiclesController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }

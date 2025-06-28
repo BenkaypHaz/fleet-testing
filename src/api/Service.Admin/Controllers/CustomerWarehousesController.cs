@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Admin.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(GroupName = "DropDownsController")]
+    [ApiExplorerSettings(GroupName = "CustomerWarehousesController")]
     [Route("api/customer/{customerId}/warehouses")]
     public class CustomerWarehousesController : BaseController
     {

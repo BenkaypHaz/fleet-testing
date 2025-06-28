@@ -143,7 +143,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 if (user != null)
                     return new GenericResponseHandler<long?>(404, null, message: $"The username: {user.UserName} already exists in the database.");
 
-                DateTime currentDate = DateTime.UtcNow;
+                DateTime currentDate = DateTime.Now;
 
                 var mediaUrl = string.Empty;
                 if (!payload.ProfilePicture.IsNullOrEmpty())
@@ -162,6 +162,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 var model = new AuthUser
                 {
+                    Dni = payload.Dni,
                     UserName = payload.UserName,
                     Email = payload.Email,
                     FirstName = payload.FirstName,
@@ -169,7 +170,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     ProfilePicture = mediaUrl.IsNullOrEmpty() ? null : mediaUrl,
                     PhoneNumber = payload.PhoneNumber,
                     BirthDate = payload.BirthDate.HasValue ? DateOnly.FromDateTime(payload.BirthDate.Value) : null,
-                    Password = PasswordHelper.HashPassword(payload.Password ?? DateTime.UtcNow.ToString().Replace(" ", "")),
+                    Password = PasswordHelper.HashPassword(payload.Password ?? DateTime.Now.ToString().Replace(" ", "")),
                     ResetPassword = false,
                     CreatedBy = createdBy,
                     CreatedDate = currentDate,
@@ -208,7 +209,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 if (user == null)
                     return new GenericResponseHandler<long?>(404, null);
 
-                DateTime currentDate = DateTime.UtcNow;
+                DateTime currentDate = DateTime.Now;
                 var mediaUrl = string.Empty;
 
                 if (!payload.ProfilePicture.IsNullOrEmpty())
@@ -274,8 +275,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 if (user == null)
                     return new GenericResponseHandler<string>(404, message: "The user you are trying to reset the password for does not exist.");
 
-                DateTime currentDate = DateTime.UtcNow;
-                user.Password = PasswordHelper.HashPassword(DateTime.UtcNow.ToString().Replace(" ", ""));
+                DateTime currentDate = DateTime.Now;
+                user.Password = PasswordHelper.HashPassword(DateTime.Now.ToString().Replace(" ", ""));
                 user.ResetPassword = true;
                 user.IsActive = false;
                 user.ModifiedBy = modifiedBy;
@@ -284,7 +285,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 var forgotPwdTokenId = await _context.AuthUserForgotPwdTokens.MaxAsync(x => x.Id);
                 forgotPwdTokenId++;
-                string token = PasswordHelper.HashPassword(DateTime.UtcNow.ToString().Replace(" ", ""));
+                string token = PasswordHelper.HashPassword(DateTime.Now.ToString().Replace(" ", ""));
 
                 var model = new AuthUserForgotPwdToken
                 {
@@ -323,7 +324,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 if (user == null)
                     return new GenericResponseHandler<long?>(404, null);
 
-                DateTime currentDate = DateTime.UtcNow;
+                DateTime currentDate = DateTime.Now;
                 user.ModifiedBy = modifiedBy;
                 user.ModifiedDate = currentDate;
                 user.IsActive = status;

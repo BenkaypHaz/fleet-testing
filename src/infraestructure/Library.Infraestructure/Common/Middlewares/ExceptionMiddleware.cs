@@ -68,7 +68,7 @@ namespace Library.Infraestructure.Common.Middlewares
                 var requestPath = context?.Request?.Path.Value ?? "N/A";
                 var requestMethod = context?.Request?.Method ?? "N/A";
                 var userAgent = context?.Request?.Headers["User-Agent"].ToString() ?? "N/A";
-                var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC");
+                var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss UTC");
 
                 var emailTemplate = $@"
                 <html>

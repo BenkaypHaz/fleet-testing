@@ -42,7 +42,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Shipment
 
                 var model = _mapper.Map<ShipmentFreight>(payload);
                 model.CreatedBy = userId;
-                model.CreatedDate = DateTime.UtcNow;
+                model.CreatedDate = DateTime.Now;
                 model.IsActive = true;
 
                 if (model.ShipmentFreightStatusId == 0)
@@ -59,7 +59,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Shipment
                     ShipmentFreightStatusId = model.ShipmentFreightStatusId,
                     Comments = "Flete creado",
                     CreatedBy = userId,
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTime.Now,
                     IsActive = true
                 };
 

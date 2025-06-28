@@ -33,11 +33,11 @@ namespace Library.Infraestructure.Configuration.Automapper.Auth
                 .ForMember(dest => dest.ModifiedByUserName, opt => opt.MapFrom(src => src.ModifiedByNavigation.UserName));
 
             CreateMap<RoleCreateDto, AuthRole>()
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             CreateMap<RoleUpdateDto, AuthRole>()
-                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.Now));
 
             #endregion
 

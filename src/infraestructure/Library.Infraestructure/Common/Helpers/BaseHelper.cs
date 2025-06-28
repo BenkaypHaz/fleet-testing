@@ -92,7 +92,7 @@ namespace Library.Infraestructure.Common.Helpers
             response.ClassName = ex.TargetSite?.DeclaringType?.FullName?.Split('+')[0] ?? "UnknownClass";
             response.MethodName = frame?.GetMethod()?.Name ?? "UnknownMethod";
             response.LineNumber = frame?.GetFileLineNumber() ?? -1;
-            response.ExceptionDate = DateTime.UtcNow;
+            response.ExceptionDate = DateTime.Now;
 
             var fullMessage = new StringBuilder();
             var currentEx = ex;

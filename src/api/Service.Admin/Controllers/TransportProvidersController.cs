@@ -10,7 +10,7 @@ namespace Service.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "TransportProvidersController")]
-    [Route("api/[controller]")]
+    [Route("api/transport-providers")]
     public class TransportProvidersController : BaseController
     {
         public TransportProvidersController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }

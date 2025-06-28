@@ -60,7 +60,7 @@ builder.Services.AddSwaggerGen(c =>
     var version = "v1";
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    var localhostPort = 7670;
+    var localhostPort = 6070;
     var proxyPath = "admin";
 
     c.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName));

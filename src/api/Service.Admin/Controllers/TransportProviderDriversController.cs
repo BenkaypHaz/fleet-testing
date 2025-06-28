@@ -8,7 +8,7 @@ namespace Service.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "TransportProviderDriversController")]
-    [Route("api/[controller]")]
+    [Route("api/transport-provider-drivers")]
     public class TransportProviderDriversController : BaseController
     {
         public TransportProviderDriversController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }

@@ -26,60 +26,66 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
         public async Task<GenericResponseHandler<string>> SignIn(SignInDTO payload)
         {
-           
-                var jwtPayload = await _context.AuthUsers
-                    .Include(c => c.AuthUserRoleUsers)
-                    .AsNoTracking()
-                    .Where(c => (c.UserName == payload.Username || c.Email == payload.Username) && c.Password == PasswordHelper.HashPassword(payload.Password))
-                    .Select(c => new JwtSessionDto
-                    {
-                        Id = c.Id,
-                        Email = c.Email,
-                        UserName = c.UserName,
-                        FirstName = c.FirstName,
-                        LastName = c.LastName,
-                        ProfilePicture = c.ProfilePicture,
-                        IsActive = c.IsActive,
-                    }).FirstOrDefaultAsync();
+            var userEntity = await _context.AuthUsers
+                .AsNoTracking()
+                .Where(user => user.UserName == payload.Username)
+                .FirstOrDefaultAsync();
 
-                if (jwtPayload == null)
-                    return new GenericResponseHandler<string>(404, null);
-                if (!jwtPayload.IsActive)
-                    return new GenericResponseHandler<string>(401, null, message: "The user account is inactive.");
+            if (userEntity == null || !PasswordHelper.VerifyPassword(payload.Password, userEntity.Password))
+                return new GenericResponseHandler<string>(401, message: $"Credenciales inválidas.");
 
-                var roles = await _context.AuthUserRoles
-                    .AsNoTracking()
-                    .Where(c => c.UserId == jwtPayload.Id)
-                    .Select(c => c.Role.Id)
-                    .ToListAsync();
+            if (!userEntity.IsActive)
+                return new GenericResponseHandler<string>(403, message: $"El usuario solicitado está inactivo.");
 
-                var authorizations = await _context.AuthRoleAuthorizations
-                    .AsNoTracking()
-                    .Where(c => roles.Contains(c.RoleId)).Select(c => c.Auth.RouteValue)
-                    .ToListAsync();
+            var jwtPayload = new JwtSessionDto
+            {
+                Id = userEntity.Id,
+                Email = userEntity.Email,
+                UserName = userEntity.UserName,
+                FirstName = userEntity.FirstName,
+                LastName = userEntity.LastName,
+                ProfilePicture = userEntity.ProfilePicture,
+                IsActive = userEntity.IsActive,
+            };
 
-                jwtPayload.Authorizations = authorizations;
+            if (jwtPayload == null)
+                return new GenericResponseHandler<string>(404, null);
+            if (!jwtPayload.IsActive)
+                return new GenericResponseHandler<string>(401, null, message: "The user account is inactive.");
 
-                var secretKey = BaseHelper.GetEnvVariable("AUTH_SECRET_KEY");
-                var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-                var creds = new SigningCredentials(issuerSigningKey, SecurityAlgorithms.HmacSha256);
-                var claims = new List<Claim>()
-                {
-                    new Claim(ClaimTypes.NameIdentifier, jwtPayload.Id.ToString()),
-                    new Claim(ClaimTypes.Name, jwtPayload.UserName),
-                    new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(authorizations)),
-                    new Claim("Session", JsonConvert.SerializeObject(jwtPayload)),
-                };
+            var roles = await _context.AuthUserRoles
+                .AsNoTracking()
+                .Where(c => c.UserId == jwtPayload.Id)
+                .Select(c => c.Role.Id)
+                .ToListAsync();
 
-                var token = new JwtSecurityToken(
-                    issuer: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
-                    audience: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddMonths(3),
-                    signingCredentials: creds
-                );
-                var bearerToken = new JwtSecurityTokenHandler().WriteToken(token);
-                return new GenericResponseHandler<string>(200, data: bearerToken);
+            var authorizations = await _context.AuthRoleAuthorizations
+                .AsNoTracking()
+                .Where(c => roles.Contains(c.RoleId)).Select(c => c.Auth.RouteValue)
+                .ToListAsync();
+
+            jwtPayload.Authorizations = authorizations;
+
+            var secretKey = BaseHelper.GetEnvVariable("AUTH_SECRET_KEY");
+            var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var creds = new SigningCredentials(issuerSigningKey, SecurityAlgorithms.HmacSha256);
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, jwtPayload.Id.ToString()),
+                new Claim(ClaimTypes.Name, jwtPayload.UserName),
+                new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(authorizations)),
+                new Claim("Session", JsonConvert.SerializeObject(jwtPayload)),
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+                audience: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+                claims: claims,
+                expires: DateTime.Now.AddMonths(3),
+                signingCredentials: creds
+            );
+            var bearerToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return new GenericResponseHandler<string>(200, data: bearerToken);
         
         }
 
@@ -112,7 +118,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
 
             #region 1. Generar y guardar token
-            var expirationDate = DateTime.UtcNow.AddHours(1);
+            var expirationDate = DateTime.Now.AddHours(1);
             int token;
             string encriptedToken;
 
@@ -257,7 +263,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
             if (!tokenData.IsActive)
                 return new GenericResponseHandler<int>(400, message: $"El token ya ha sido utilizado.");
 
-            if (tokenData.ExpirationDate < DateTime.UtcNow)
+            if (tokenData.ExpirationDate < DateTime.Now)
                 return new GenericResponseHandler<int>(400, message: $"El token ha expirado.");
 
             return new GenericResponseHandler<int>(201, data: 1, message: "Token verificado.");
@@ -280,7 +286,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
             if (!tokenData.IsActive)
                 return new GenericResponseHandler<long>(400, message: $"El token ya ha sido utilizado.");
 
-            if (tokenData.ExpirationDate < DateTime.UtcNow)
+            if (tokenData.ExpirationDate < DateTime.Now)
                 return new GenericResponseHandler<long>(400, message: $"El token ha expirado.");
             #endregion
 

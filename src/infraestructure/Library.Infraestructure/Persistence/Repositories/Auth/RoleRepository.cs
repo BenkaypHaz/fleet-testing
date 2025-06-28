@@ -94,7 +94,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
             role.Description = payload.Description;
             role.ModifiedBy = userId;
-            role.ModifiedDate = DateTime.UtcNow;
+            role.ModifiedDate = DateTime.Now;
             role.IsActive = payload.IsActive;
 
             var existingAuthorizationsRoles = await _context.AuthRoleAuthorizations
@@ -116,7 +116,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     RoleId = role.Id,
                     AuthId = authId,
                     CreatedBy = userId,
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTime.Now,
                     ModifiedBy = null,
                     ModifiedDate = null,
                     IsActive = true,

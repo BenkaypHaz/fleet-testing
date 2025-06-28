@@ -31,7 +31,7 @@ namespace Library.Infraestructure.Configuration.Automapper.BusinessPartner
             #region Transport Vehicle
             CreateMap<BusinessPartnerProviderTransportVehicle, TransportVehicleReadDto>();
             CreateMap<TransportVehicleCreateDto, BusinessPartnerProviderTransportVehicle>()
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
             #endregion
 

@@ -34,11 +34,11 @@ namespace Library.Infraestructure.Configuration.Automapper.General
             //    .ForMember(dest => dest.ModifiedByNavigation, opt => opt.MapFrom(src => src.ModifiedByNavigation));
 
             //CreateMap<BankCreateDto, Bank>()
-            //    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            //    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
             //    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             //CreateMap<BankUpdateDto, Bank>()
-            //    .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
+            //    .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.Now));
 
             #endregion
 
@@ -50,11 +50,11 @@ namespace Library.Infraestructure.Configuration.Automapper.General
                 .ForMember(dest => dest.ModifiedByNavigation, opt => opt.MapFrom(src => src.ModifiedByNavigation));
 
             CreateMap<CountryCreateDto, GeneralCountry>()
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             CreateMap<CountryUpdateDto, GeneralCountry>()
-                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.Now));
 
             #endregion
 
@@ -68,11 +68,11 @@ namespace Library.Infraestructure.Configuration.Automapper.General
                 .ForMember(dest => dest.ModifiedByNavigation, opt => opt.MapFrom(src => src.ModifiedByNavigation));
 
             CreateMap<RegionCreateDto, GeneralRegion>()
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             CreateMap<RegionUpdateDto, GeneralRegion>()
-                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.Now));
 
             #endregion
 
@@ -87,11 +87,11 @@ namespace Library.Infraestructure.Configuration.Automapper.General
                 .ForMember(dest => dest.ModifiedByNavigation, opt => opt.MapFrom(src => src.ModifiedByNavigation));
 
             CreateMap<CityCreateDto, GeneralCity>()
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             CreateMap<CityUpdateDto, GeneralCity>()
-                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(_ => DateTime.Now));
 
             #endregion
 

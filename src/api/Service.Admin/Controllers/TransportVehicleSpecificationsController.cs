@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Service.Admin.Controllers
 {
     [ApiController]
-    [ApiExplorerSettings(GroupName = "TransportProviderVehiclesController")]
-    [Route("api/[controller]")]
+    [ApiExplorerSettings(GroupName = "TransportVehicleSpecificationsController")]
+    [Route("api/transport-vehicle-specifications")]
     public class TransportVehicleSpecificationsController : BaseController
     {
         public TransportVehicleSpecificationsController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }

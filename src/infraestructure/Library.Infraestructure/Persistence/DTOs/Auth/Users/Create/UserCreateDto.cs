@@ -8,6 +8,7 @@ namespace Library.Infraestructure.Persistence.DTOs.Auth.Users.Create
 {
     public class UserCreateDto
     {
+        public string Dni { get; set; } = null!;
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string UserName { get; set; }
