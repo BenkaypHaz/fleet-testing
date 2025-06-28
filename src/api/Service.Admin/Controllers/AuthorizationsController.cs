@@ -7,7 +7,7 @@ namespace Api.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "AuthorizationsController")]
-    [Route("api/[controller]")]
+    [Route("api/authorizations")]
     public class AuthorizationsController : BaseController
     {
         public AuthorizationsController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
@@ -19,7 +19,7 @@ namespace Api.Admin.Controllers
             return "Ok!";
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<ActionResult<GenericResponseHandler<List<ModuleReadDto>>>> Get()
         {
             var result = await _unitOfWork.AuthorizationRepository.Get();

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Library.Infraestructure.Common.Helpers;
 using Library.Infraestructure.Common.ResponseHandler;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ProviderDriver.Read;
+using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,35 +20,35 @@ namespace Library.Infraestructure.Persistence.Repositories.BusinessPartner
             _mapper = mapper;
         }
 
-        public async Task<GenericResponseHandler<List<ProviderDriverReadDto>>> GetBySearch(string? searchValue)
+        public async Task<GenericResponseHandler<List<ProviderDriverReadDto>>> Get(FilterOptionsDto filterOptions)
         {
-          
-                var query = _context.BusinessPartnerProviderDrivers
-                    .Where(x => x.IsActive)
-                    .AsNoTracking();
+            var query = _context.BusinessPartnerProviderDrivers
+                .Where(x => x.IsActive)
+                .AsNoTracking();
 
-                if (!string.IsNullOrEmpty(searchValue))
-                {
-                    var searchLower = searchValue.ToLower();
-                    query = query.Where(x =>
-                        x.FirstName.ToLower().Contains(searchLower) ||
-                        x.FirstName.ToLower().Equals(searchLower) ||
-                        x.LastName.ToLower().Contains(searchLower) ||
-                        x.LastName.ToLower().Equals(searchLower) ||
-                        (x.FirstName + " " + x.LastName).ToLower().Contains(searchLower) ||
-                        (x.NationalId != null && x.NationalId.ToLower().StartsWith(searchLower)) ||
-                        (x.NationalId != null && x.NationalId.ToLower().Equals(searchLower)));
-                }
+            if (!string.IsNullOrEmpty(filterOptions.searchValue))
+            {
+                var searchLower = filterOptions.searchValue.ToLower();
+                query = query.Where(x =>
+                    x.FirstName.ToLower().Contains(searchLower) ||
+                    x.FirstName.ToLower().Equals(searchLower) ||
+                    x.LastName.ToLower().Contains(searchLower) ||
+                    x.LastName.ToLower().Equals(searchLower) ||
+                    (x.FirstName + " " + x.LastName).ToLower().Contains(searchLower) ||
+                    (x.NationalId != null && x.NationalId.ToLower().StartsWith(searchLower)) ||
+                    (x.NationalId != null && x.NationalId.ToLower().Equals(searchLower)));
+            }
+            if (filterOptions.enablePagination)
+                query = query.Skip((filterOptions.page - 1) * filterOptions.recordsPerPage)
+                .Take(filterOptions.recordsPerPage);
 
-                var data = await query
+            var data = await query
                     .OrderBy(x => x.FirstName)
                     .ThenBy(x => x.LastName)
-                    .Take(20)
                     .ProjectTo<ProviderDriverReadDto>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 
-                return new GenericResponseHandler<List<ProviderDriverReadDto>>(200, data, data.Count);
-         
+            return new GenericResponseHandler<List<ProviderDriverReadDto>>(200, data, data.Count);
         }
     }
 }

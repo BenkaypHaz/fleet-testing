@@ -48,7 +48,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         private VehicleModelRepository? _VehicleModelRepository;
         private ProviderProfileRepository? _ProviderProfileRepository;
         private ProviderDriverRepository? _ProviderDriverRepository;
-        private TransportVehicleRepository? _TransportVehicleRepository;
+        private ProviderTransportVehicleRepository? _TransportVehicleRepository;
         #endregion
 
         #region Customer
@@ -69,8 +69,8 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         public ProviderDriverRepository ProviderDriverRepository =>
             _ProviderDriverRepository ??= new ProviderDriverRepository(_context, _mapper);
 
-        public TransportVehicleRepository TransportVehicleRepository =>
-            _TransportVehicleRepository ??= new TransportVehicleRepository(_context, _mapper);
+        public ProviderTransportVehicleRepository TransportVehicleRepository =>
+            _TransportVehicleRepository ??= new ProviderTransportVehicleRepository(_context, _mapper);
         #endregion
 
         #region Customer Properties

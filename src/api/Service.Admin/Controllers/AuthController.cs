@@ -11,7 +11,7 @@ namespace Api.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "AuthController")]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : BaseController
     {
         public AuthController(ILogger<BaseController> logger, IUnitOfWork unitOfWork,IHttpContextAccessor httpContextAccessor): base(logger, unitOfWork, httpContextAccessor){ }
@@ -23,7 +23,7 @@ namespace Api.Admin.Controllers
             return "Ok!";
         }
 
-        [HttpPost("SignIn")]
+        [HttpPost("signIn")]
         public async Task<ActionResult<GenericResponseHandler<string>>> SignIn([FromBody] SignInDTO payload)
         {
             var result = await _unitOfWork.LoginRepository.SignIn(payload);

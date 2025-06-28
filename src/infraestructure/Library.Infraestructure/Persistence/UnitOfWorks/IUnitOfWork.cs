@@ -27,7 +27,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         VehicleModelRepository VehicleModelRepository { get; }
         ProviderProfileRepository ProviderProfileRepository { get; }
         ProviderDriverRepository ProviderDriverRepository { get; }
-        TransportVehicleRepository TransportVehicleRepository { get; }
+        ProviderTransportVehicleRepository TransportVehicleRepository { get; }
         #endregion
 
         #region Customer

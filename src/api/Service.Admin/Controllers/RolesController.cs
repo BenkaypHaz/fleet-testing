@@ -10,7 +10,7 @@ namespace Api.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "RolesController")]
-    [Route("api/[controller]")]
+    [Route("api/roles")]
     public class RolesController : BaseController
     {
         public RolesController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
@@ -22,9 +22,9 @@ namespace Api.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<GenericResponseHandler<List<RoleReadDTO>>>> Get([FromQuery] PaginationDTO paginationDTO)
+        public async Task<ActionResult<GenericResponseHandler<List<RoleReadDTO>>>> Get([FromQuery] FilterOptionsDto filterOptions)
         {
-            var result = await _unitOfWork.RoleRepository.Get(paginationDTO);
+            var result = await _unitOfWork.RoleRepository.Get(filterOptions);
             return StatusCode(result.statusCode, result);
         }
 

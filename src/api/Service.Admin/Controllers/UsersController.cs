@@ -10,7 +10,7 @@ namespace Api.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "UsersController")]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UsersController : BaseController
     {
         public UsersController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
@@ -23,9 +23,9 @@ namespace Api.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<GenericResponseHandler<List<UserReadDTO>>>> Get([FromQuery] PaginationDTO paginationDTO)
+        public async Task<ActionResult<GenericResponseHandler<List<UserReadDTO>>>> Get([FromQuery] FilterOptionsDto filterOptions)
         {
-            var result = await _unitOfWork.UserRepository.Get(paginationDTO);
+            var result = await _unitOfWork.UserRepository.Get(filterOptions);
             return StatusCode(result.statusCode, result);
         }
 
@@ -49,7 +49,6 @@ namespace Api.Admin.Controllers
             var result = await _unitOfWork.UserRepository.Update(id, Payload, _userId);
             return StatusCode(result.statusCode, result);
         }
-
 
     }
 }

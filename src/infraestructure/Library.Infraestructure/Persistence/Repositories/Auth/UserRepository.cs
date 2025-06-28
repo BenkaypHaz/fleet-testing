@@ -22,15 +22,15 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
             _context = context;
         }
 
-        public async Task<GenericResponseHandler<List<UserReadDTO>>> Get(PaginationDTO paginationDTO)
+        public async Task<GenericResponseHandler<List<UserReadDTO>>> Get(FilterOptionsDto filterOptions)
         {
             var data = new List<UserReadDTO>();
           
                 var query = _context.AuthUsers.AsNoTracking().AsQueryable();
 
-                if (!string.IsNullOrEmpty(paginationDTO.SearchValue))
+                if (!string.IsNullOrEmpty(filterOptions.searchValue))
                 {
-                    string[] searchValues = paginationDTO.SearchValue.Split(" ");
+                    string[] searchValues = filterOptions.searchValue.Split(" ");
                     foreach (var value in searchValues)
                     {
                         query = query.Where(a =>
@@ -44,8 +44,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 var totalRecords = await query.CountAsync();
                 data = await query
-                    .Skip((paginationDTO.Page - 1) * paginationDTO.RecordsPerPage)
-                    .Take(paginationDTO.RecordsPerPage)
+                    .Skip((filterOptions.page - 1) * filterOptions.recordsPerPage)
+                    .Take(filterOptions.recordsPerPage)
                     .OrderBy(c => c.FirstName)
                     .Select(c => new UserReadDTO
                     {

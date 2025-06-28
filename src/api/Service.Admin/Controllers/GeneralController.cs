@@ -7,7 +7,7 @@ namespace Api.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "GeneralController")]
-    [Route("api/[controller]")]
+    [Route("api/general")]
     public class GeneralController : BaseController
     {
         public GeneralController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
