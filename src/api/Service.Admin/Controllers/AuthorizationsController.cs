@@ -8,9 +8,9 @@ namespace Api.Admin.Controllers
     [ApiController]
     [ApiExplorerSettings(GroupName = "AuthorizationsController")]
     [Route("api/[controller]")]
-    public class AuthorizationsController : BaseControllerUsers
+    public class AuthorizationsController : BaseController
     {
-        public AuthorizationsController(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
+        public AuthorizationsController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
 
         /// <summary>Returns an "Ok" to check the correct functioning of the controller.</summary>
         [HttpGet("health-check")]

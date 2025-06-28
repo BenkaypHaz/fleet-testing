@@ -1,5 +1,6 @@
 using Library.Infraestructure.Common.Filters.Swagger;
 using Library.Infraestructure.Common.Helpers;
+using Library.Infraestructure.Common.Middlewares;
 using Library.Infraestructure.Persistence.Models;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 using Library.Infraestructure.Persistence.UnitOfWorks;
@@ -17,14 +18,15 @@ builder.Services.AddHttpContextAccessor();
 
 SentrySdk.Init(options =>
 {
-    options.Dsn = BaseHelper.GetEnvVariable("SENTRY_KEY");
+    options.Dsn = BaseHelper.GetEnvVariable("PROJECT_SENTRY_KEY");
     options.Debug = true;
     options.SendDefaultPii = true;
     options.TracesSampleRate = 1.0f;
     options.ProfilesSampleRate = 1.0f;
 });
 
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(BaseHelper.GetSha256(BaseHelper.GetConnectionString())));
+var secretKey = BaseHelper.GetEnvVariable("AUTH_SECRET_KEY");
+var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -34,9 +36,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = BaseHelper.GetEnvVariable("SERVICES_HOST"),
-            ValidAudience = BaseHelper.GetEnvVariable("SERVICES_HOST"),
-            IssuerSigningKey = key
+            ValidIssuer = BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+            ValidAudience = BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+            IssuerSigningKey = issuerSigningKey
         };
         options.Events = new JwtBearerEvents
         {

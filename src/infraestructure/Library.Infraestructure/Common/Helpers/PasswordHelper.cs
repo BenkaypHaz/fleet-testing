@@ -51,4 +51,11 @@ public static class PasswordHelper
 
         return CryptographicOperations.FixedTimeEquals(originalHash, computedHash);
     }
+
+    public static int GenerateVerificationCode(int length)
+    {
+        var random = new Random();
+        return random.Next(0, (int)Math.Pow(10, length));
+    }
+
 }

@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 [Route("api/[controller]")]
-public class BaseControllerUsers : ControllerBase
+public class BaseController : ControllerBase
 {
     protected readonly IUnitOfWork _unitOfWork;
-    protected readonly ILogger<BaseControllerUsers> _logger;
+    protected readonly ILogger<BaseController> _logger;
     protected readonly IHttpContextAccessor _httpContextAccessor;
 
-    public BaseControllerUsers(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+    public BaseController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

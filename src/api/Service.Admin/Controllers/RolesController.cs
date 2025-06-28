@@ -2,7 +2,7 @@
 using Library.Infraestructure.Persistence.DTOs.Auth.Roles.Create;
 using Library.Infraestructure.Persistence.DTOs.Auth.Roles.Read;
 using Library.Infraestructure.Persistence.DTOs.Auth.Roles.Update;
-using Library.Infraestructure.Persistence.DTOs.Utils;
+using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,9 @@ namespace Api.Admin.Controllers
     [ApiController]
     [ApiExplorerSettings(GroupName = "RolesController")]
     [Route("api/[controller]")]
-    public class RolesController : BaseControllerUsers
+    public class RolesController : BaseController
     {
-        public RolesController(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
+        public RolesController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
 
         [HttpGet("health-check")]
         public string HealthCheck()

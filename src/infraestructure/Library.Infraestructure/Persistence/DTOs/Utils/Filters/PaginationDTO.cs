@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library.Infraestructure.Persistence.DTOs.Utils
+namespace Library.Infraestructure.Persistence.DTOs.Utils.Filters
 {
     public class PaginationDTO
     {
@@ -15,7 +15,7 @@ namespace Library.Infraestructure.Persistence.DTOs.Utils
         public int RecordsPerPage
         {
             get { return recordsPerPage; }
-            set { recordsPerPage = (value > maxRecordsPerPage) ? maxRecordsPerPage : value; }
+            set { recordsPerPage = value > maxRecordsPerPage ? maxRecordsPerPage : value; }
         }
         public string SortDirection { get; set; } = "DESC";
         public bool? Status { get; set; } = null;

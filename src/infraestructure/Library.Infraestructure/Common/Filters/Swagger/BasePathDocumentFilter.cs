@@ -15,7 +15,7 @@ namespace Library.Infraestructure.Common.Filters.Swagger
         }
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
-            string SERVICES_HOST = BaseHelper.GetEnvVariable("SERVICES_HOST");
+            string SERVICES_HOST = BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST");
             swaggerDoc.Servers = new List<OpenApiServer>() {
                 new OpenApiServer() { Url = $"{SERVICES_HOST}/{_path}" },
                 new OpenApiServer() { Url = $"http://localhost:{_localhostPort}" }

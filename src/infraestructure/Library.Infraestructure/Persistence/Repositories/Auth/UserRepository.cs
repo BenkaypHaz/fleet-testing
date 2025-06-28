@@ -5,7 +5,7 @@ using Library.Infraestructure.Persistence.DTOs.Auth.Roles.Read;
 using Library.Infraestructure.Persistence.DTOs.Auth.Users.Create;
 using Library.Infraestructure.Persistence.DTOs.Auth.Users.Read;
 using Library.Infraestructure.Persistence.DTOs.Auth.Users.Update;
-using Library.Infraestructure.Persistence.DTOs.Utils;
+using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.Models;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
@@ -175,7 +175,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     var filePath = Path.Combine(folderPath, $"{payload.UserName}.{profilePicture.Extension}");
                     await File.WriteAllBytesAsync(filePath, profilePicture.File);
 
-                    var domain = BaseHelper.GetEnvVariable("CDN_HOST");
+                    var domain = BaseHelper.GetEnvVariable("PROJECT_CDN_HOST");
                     mediaUrl = $"{domain}/content/uploads/profiles/{payload.UserName}.{profilePicture.Extension}";
                 }
 
@@ -188,7 +188,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     ProfilePicture = mediaUrl.IsNullOrEmpty() ? null : mediaUrl,
                     PhoneNumber = payload.PhoneNumber,
                     BirthDate = payload.BirthDate.HasValue ? DateOnly.FromDateTime(payload.BirthDate.Value) : null,
-                    Password = BaseHelper.GetSha256(payload.Password ?? DateTime.UtcNow.ToString().Replace(" ", "")),
+                    Password = PasswordHelper.HashPassword(payload.Password ?? DateTime.UtcNow.ToString().Replace(" ", "")),
                     ResetPassword = false,
                     CreatedBy = createdBy,
                     CreatedDate = currentDate,
@@ -246,7 +246,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     var filePath = Path.Combine(folderPath, $"{payload.UserName}.{profilePicture.Extension}");
                     await File.WriteAllBytesAsync(filePath, profilePicture.File);
 
-                    var domain = BaseHelper.GetEnvVariable("CDN_HOST");
+                    var domain = BaseHelper.GetEnvVariable("PROJECT_CDN_HOST");
                     mediaUrl = $"{domain}/content/uploads/profiles/{payload.UserName}.{profilePicture.Extension}";
                 }
 
@@ -306,7 +306,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                     return new GenericResponseHandler<string>(404, message: "The user you are trying to reset the password for does not exist.");
 
                 DateTime currentDate = DateTime.UtcNow;
-                user.Password = BaseHelper.GetSha256(DateTime.UtcNow.ToString().Replace(" ", ""));
+                user.Password = PasswordHelper.HashPassword(DateTime.UtcNow.ToString().Replace(" ", ""));
                 user.ResetPassword = true;
                 user.IsActive = false;
                 user.ModifiedBy = modifiedBy;
@@ -315,7 +315,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 var forgotPwdTokenId = await _context.AuthUserForgotPwdTokens.MaxAsync(x => x.Id);
                 forgotPwdTokenId++;
-                string token = BaseHelper.GetSha256(DateTime.UtcNow.ToString().Replace(" ", ""));
+                string token = PasswordHelper.HashPassword(DateTime.UtcNow.ToString().Replace(" ", ""));
 
                 var model = new AuthUserForgotPwdToken
                 {

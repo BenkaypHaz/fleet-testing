@@ -12,9 +12,9 @@ namespace Api.Admin.Controllers
     [ApiController]
     [ApiExplorerSettings(GroupName = "AuthController")]
     [Route("api/[controller]")]
-    public class AuthController : BaseControllerUsers
+    public class AuthController : BaseController
     {
-        public AuthController(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork,IHttpContextAccessor httpContextAccessor): base(logger, unitOfWork, httpContextAccessor){ }
+        public AuthController(ILogger<BaseController> logger, IUnitOfWork unitOfWork,IHttpContextAccessor httpContextAccessor): base(logger, unitOfWork, httpContextAccessor){ }
 
         [SwaggerDocumentation("Obtiene el usuario por ID", 200, 400, 404, 500)]
         [HttpGet("health-check")]

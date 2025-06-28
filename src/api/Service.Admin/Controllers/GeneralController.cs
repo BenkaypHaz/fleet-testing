@@ -1,5 +1,5 @@
 ﻿using Library.Infraestructure.Common.ResponseHandler;
-using Library.Infraestructure.Persistence.DTOs.Utils;
+using Library.Infraestructure.Persistence.DTOs.Utils.Generics;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +8,9 @@ namespace Api.Admin.Controllers
     [ApiController]
     [ApiExplorerSettings(GroupName = "GeneralController")]
     [Route("api/[controller]")]
-    public class GeneralController : BaseControllerUsers
+    public class GeneralController : BaseController
     {
-        public GeneralController(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
+        public GeneralController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
 
 
         [HttpGet("health-check")]

@@ -1,7 +1,11 @@
 services:
-  fleetmanager.service.api.admin:
-    image: ${DOCKER_REGISTRY}/elearninggx-service-api-admin:latest
+  fleetmanager.service.admin:
+    image: ${PROJECT_DOCKER_REGISTRY}/fleetmanager-service-admin:latest
     restart: always
     build:
       context: .
       dockerfile: src/api/Service.Admin/Dockerfile
+
+  fleetmanager.service.cdn:
+    image: nginx:latest
+    restart: always

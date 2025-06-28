@@ -1,14 +1,22 @@
 services:
-  fleetmanager.service.api.admin:
+  fleetmanager.service.admin:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DBConnectionString=${DBConnectionString}
-      - FRONTEND_HOST=${FRONTEND_HOST}
-      - SERVICES_HOST=${SERVICES_HOST}
-      - TZ=${TIMEZONE}
-      - SENTRY_KEY=${SENTRY_KEY}
-
-    # volumes:
-    #   - ./media:/app/media
+      - ASPNETCORE_ENVIRONMENT=${PROJECT_ASPNETCORE_ENVIRONMENT}
+      - TZ=${PROJECT_TIMEZONE}
+      - PROJECT_DB_CONNECTION_STRING=${PROJECT_DB_CONNECTION_STRING}
+      - PROJECT_FRONTEND_HOST=${PROJECT_FRONTEND_HOST}
+      - PROJECT_SERVICES_HOST=${PROJECT_SERVICES_HOST}
+      - PROJECT_SENTRY_KEY=${PROJECT_SENTRY_KEY}
+      - AUTH_SECRET_KEY=${AUTH_SECRET_KEY}
+    volumes:
+      - ./media:/app/media
     ports:
-       - "7670:8080"
+       - "6070:8080"
+
+  fleetmanager.service.cdn:
+    image: nginx:latest
+    ports:
+      - "6071:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./media:/usr/share/nginx/html/media

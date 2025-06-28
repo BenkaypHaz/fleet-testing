@@ -2,7 +2,7 @@
 using Library.Infraestructure.Persistence.DTOs.Auth.Users.Create;
 using Library.Infraestructure.Persistence.DTOs.Auth.Users.Read;
 using Library.Infraestructure.Persistence.DTOs.Auth.Users.Update;
-using Library.Infraestructure.Persistence.DTOs.Utils;
+using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,9 @@ namespace Api.Admin.Controllers
     [ApiController]
     [ApiExplorerSettings(GroupName = "UsersController")]
     [Route("api/[controller]")]
-    public class UsersController : BaseControllerUsers
+    public class UsersController : BaseController
     {
-        public UsersController(ILogger<BaseControllerUsers> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
+        public UsersController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
 
 
         [HttpGet("health-check")]

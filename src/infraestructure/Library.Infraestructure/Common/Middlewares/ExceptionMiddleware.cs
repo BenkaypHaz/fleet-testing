@@ -1,11 +1,13 @@
-﻿using Library.Infraestructure.Common.ResponseHandler;
+﻿using Library.Infraestructure.Common.Helpers;
+using Library.Infraestructure.Common.ResponseHandler;
+using Library.Infraestructure.Persistence.DTOs.Utils.Emails;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace Library.Infraestructure.Common.Helpers
+namespace Library.Infraestructure.Common.Middlewares
 {
     public class ExceptionMiddleware
     {
@@ -86,7 +88,7 @@ namespace Library.Infraestructure.Common.Helpers
                     
                     <h3>📋 Stack Trace</h3>
                     <pre style='background-color: #f5f5f5; padding: 10px; border-radius: 5px; font-size: 12px;'>
-{originalException.StackTrace}
+                        {originalException.StackTrace}
                     </pre>
 
                     <h3>🔧 Acciones Recomendadas</h3>
@@ -101,11 +103,16 @@ namespace Library.Infraestructure.Common.Helpers
                 </body>
                 </html>";
 
-                await BaseHelper.SendEmail(
-                    NameRecipient: "Equipo IT",
-                    emailRecipient: "it@coreexpress.com",
+                var toEmails = new List<ToEmailsDto> 
+                {
+                    new ToEmailsDto { NameRecipient = "Equipo IT", EmailRecipient = "info@mindsetgx.com" }
+                };
+                await MailDeliveryHelper.SendNoReplyEmail(
+                    subject: "🚨 URGENTE: Fallo en Monitoreo de Excepciones - Sentry Inaccesible",
+                    toEmails: toEmails,
                     template: emailTemplate,
-                    subject: "🚨 URGENTE: Fallo en Monitoreo de Excepciones - Sentry Inaccesible"
+                    null, 
+                    false
                 );
 
                 _logger.LogInformation("Email de respaldo enviado exitosamente por fallo de Sentry");

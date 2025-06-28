@@ -1,20 +1,10 @@
 ﻿using Library.Infraestructure.Persistence.DTOs.General.ErrorLog.Create;
-using Library.Infraestructure.Persistence.DTOs.Utils;
-using Library.Infraestructure.Persistence.Models;
+using Library.Infraestructure.Persistence.DTOs.Utils.Files;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
-using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Library.Infraestructure.Common.Helpers
 {
@@ -31,6 +21,18 @@ namespace Library.Infraestructure.Common.Helpers
             }
             return connectionString;
         }
+
+        public static string GetConnectionString()
+        {
+            string? connectionString = Environment.GetEnvironmentVariable("PROJECT_DB_CONNECTION_STRING");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                Console.WriteLine("The Environment variable PROJECT_DB_CONNECTION_STRING is not configured.");
+                throw new Exception("The Environment variable PROJECT_DB_CONNECTION_STRING is not configured.");
+            }
+            return connectionString;
+        }
+
         #endregion
 
         #region Utils
@@ -38,100 +40,6 @@ namespace Library.Infraestructure.Common.Helpers
         public static string GetCustomerFolder(string lockerId, string firstName, string lastName) 
         {
             return $"{lockerId.ToUpper()}-{firstName.ToUpper().Trim()}{lastName.ToUpper().Trim()}";
-        }
-
-        #endregion
-
-        #region DataBaseConnection
-
-        public static string GetConnectionString()
-        {
-            string? connectionString = Environment.GetEnvironmentVariable("DBConnectionString");
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                Console.WriteLine("The Environment variable DBConnectionString is not configured.");
-                throw new Exception("The Environment variable DBConnectionString is not configured.");
-            }
-            return connectionString;
-        }
-
-        #endregion
-
-        #region Encrypt
-
-        public static IConfiguration? Configuration { get; }
-
-        public static byte[]? GetEncryptedSecretKey()
-        {
-            string? SecretKey = Environment.GetEnvironmentVariable("SecretKey");
-            if (string.IsNullOrEmpty(SecretKey))
-            {
-                Console.WriteLine("The Environment variable SecretKey is not configured.");
-                throw new Exception("The Environment variable SecretKey is not configured.");
-            }
-
-            string EncryptedSecretKey = GetSha256(SecretKey);
-            var FormatKey = Encoding.ASCII.GetBytes(EncryptedSecretKey);
-            return FormatKey;
-        }
-
-        public static string GetSha256(string str)
-        {
-            var sha256 = SHA256.Create();
-            var encoding = new ASCIIEncoding();
-            byte[] stream;
-            var sb = new StringBuilder();
-            stream = sha256.ComputeHash(encoding.GetBytes(str));
-            for (var i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
-            return sb.ToString();
-        }
-
-        public static int GenerateRandomNum(int length)
-        {
-            var random = new Random();
-            return random.Next(0, (int)Math.Pow(10, length));
-        }
-
-        #endregion
-
-        #region Emails
-
-        public static async Task<bool> SendEmail(string NameRecipient, string emailRecipient, string template, string subject)
-        {
-            var emailSender = "info@coreexpresshn.com";
-            var password = "ugov foas calx rits";
-            // Configurar el mensaje MIME
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("CoreExpress", emailSender));
-            message.To.Add(new MailboxAddress(NameRecipient, emailRecipient));
-            message.Subject = subject;
-            message.Body = new TextPart("html")
-            {
-                Text = template
-            };
-            using (var client = new SmtpClient())
-            {
-                try
-                {
-                    // Ignorar la validación del certificado para Gmail
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                    client.Timeout = 30000;
-                    await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync(emailSender, password);
-                    await client.SendAsync(message);
-                    return true;
-                }
-                catch (Exception Ex)
-                {
-                    await SaveErrorLog(Ex);
-                    return false;
-                }
-                finally
-                {
-                    if (client.IsConnected)
-                        await client.DisconnectAsync(true);
-                }
-            }
         }
 
         #endregion
@@ -226,7 +134,7 @@ namespace Library.Infraestructure.Common.Helpers
 
         #endregion
 
-        #region Media
+        #region Files
         public static FileTypeDTO GetFileType(string FileBase64)
         {
             FileTypeDTO file = new FileTypeDTO();
@@ -340,7 +248,7 @@ namespace Library.Infraestructure.Common.Helpers
             }
         }
 
-
         #endregion
+
     }
 }

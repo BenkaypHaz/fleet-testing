@@ -3,6 +3,7 @@ using Library.Infraestructure.Common.ResponseHandler;
 using Library.Infraestructure.Persistence.DTOs.Auth.Login.Create;
 using Library.Infraestructure.Persistence.DTOs.Auth.Login.Read;
 using Library.Infraestructure.Persistence.DTOs.Auth.Login.Update;
+using Library.Infraestructure.Persistence.DTOs.Utils.Emails;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +31,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 var jwtPayload = await _context.AuthUsers
                     .Include(c => c.AuthUserRoleUsers)
                     .AsNoTracking()
-                    .Where(c => (c.UserName == payload.Username || c.Email == payload.Username) && c.Password == BaseHelper.GetSha256(payload.Password))
+                    .Where(c => (c.UserName == payload.Username || c.Email == payload.Username) && c.Password == PasswordHelper.HashPassword(payload.Password))
                     .Select(c => new JwtSessionDto
                     {
                         Id = c.Id,
@@ -60,8 +61,9 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
                 jwtPayload.Authorizations = authorizations;
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(BaseHelper.GetSha256(BaseHelper.GetConnectionString())));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var secretKey = BaseHelper.GetEnvVariable("AUTH_SECRET_KEY");
+                var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+                var creds = new SigningCredentials(issuerSigningKey, SecurityAlgorithms.HmacSha256);
                 var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, jwtPayload.Id.ToString()),
@@ -71,8 +73,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                 };
 
                 var token = new JwtSecurityToken(
-                    issuer: BaseHelper.GetEnvVariable("SERVICES_HOST"),
-                    audience: BaseHelper.GetEnvVariable("SERVICES_HOST"),
+                    issuer: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+                    audience: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
                     claims: claims,
                     expires: DateTime.UtcNow.AddMonths(3),
                     signingCredentials: creds
@@ -122,8 +124,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
             do
             {
-                token = BaseHelper.GenerateRandomNum(6);
-                encriptedToken = BaseHelper.GetSha256(token.ToString());
+                token = PasswordHelper.GenerateVerificationCode(6);
+                encriptedToken = PasswordHelper.HashPassword(token.ToString());
             } while (await _context.AuthUserForgotPwdTokens
                 .AnyAsync(t => t.Token == encriptedToken));
 
@@ -222,10 +224,19 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
                         </table>
                     </div>
                 </body>
-            </html>
-                ";
+            </html>";
 
-            bool resetPasswordEmailResponse = await BaseHelper.SendEmail($"{userData.FirstName} {userData.LastName}", userData.Email, template, "CoreExpress - Cambio de contraseña aprobado");
+            var toEmails = new List<ToEmailsDto>
+                {
+                    new ToEmailsDto { NameRecipient = $"{userData.FirstName} {userData.LastName}", EmailRecipient = userData.Email }
+                };
+            bool resetPasswordEmailResponse = await MailDeliveryHelper.SendNoReplyEmail(
+                subject: "Reset password",
+                toEmails: toEmails,
+                template,
+                null, 
+                false
+            );
 
             if (!resetPasswordEmailResponse)
                 return new GenericResponseHandler<int>(400, message: "Error al enviar el correo al usuario");
@@ -239,7 +250,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
         public async Task<GenericResponseHandler<int>> ValidateForgotPwdToken(ValidateUserResetPasswordTokenDto payload)
         {
             var tokenData = await _context.AuthUserForgotPwdTokens
-                .Where(token => token.Token == BaseHelper.GetSha256(payload.Token.ToString()))
+                .Where(token => token.Token == PasswordHelper.HashPassword(payload.Token.ToString()))
                 .Include(request => request.User)
                 .FirstOrDefaultAsync();
 
@@ -263,7 +274,7 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
 
             #region 1. Validar token
             var tokenData = await _context.AuthUserForgotPwdTokens
-                .Where(token => token.Token == BaseHelper.GetSha256(payload.Token.ToString()))
+                .Where(token => token.Token == PasswordHelper.HashPassword(payload.Token.ToString()))
                 .FirstOrDefaultAsync();
 
             if (tokenData == null)
