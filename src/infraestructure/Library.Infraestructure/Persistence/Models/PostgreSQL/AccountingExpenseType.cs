@@ -3,21 +3,11 @@ using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
-public partial class ShipmentExpense
+public partial class AccountingExpenseType
 {
     public long Id { get; set; }
 
-    public long ShipmentFreightId { get; set; }
-
-    public long ShipmentExpenseTypeId { get; set; }
-
-    public decimal Amount { get; set; }
-
-    public string Currency { get; set; } = null!;
-
-    public string? Description { get; set; }
-
-    public DateOnly ExpenseDate { get; set; }
+    public string Name { get; set; } = null!;
 
     public long CreatedBy { get; set; }
 
@@ -29,11 +19,9 @@ public partial class ShipmentExpense
 
     public bool IsActive { get; set; }
 
+    public virtual ICollection<AccountingExpense> AccountingExpenses { get; set; } = new List<AccountingExpense>();
+
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
-
-    public virtual ShipmentExpenseType ShipmentExpenseType { get; set; } = null!;
-
-    public virtual ShipmentFreight ShipmentFreight { get; set; } = null!;
 }

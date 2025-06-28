@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
-public partial class ShipmentFuelOrder
+public partial class AccountingFuelOrder
 {
     public long Id { get; set; }
 
-    public long ShipmentFreightId { get; set; }
+    public long AccountingFuelOrderTypeId { get; set; }
 
-    public long ShipmentFuelOrderTypeId { get; set; }
+    public long SettingCurrencyId { get; set; }
 
     public long BusinessPartnerProviderTransportVehicleId { get; set; }
 
     public long BusinessPartnerFuelOrderIssuerId { get; set; }
 
-    public long ShipmentGasStationId { get; set; }
+    public long SettingGasStationId { get; set; }
 
-    public long BusinessPartnerProviderDriverId { get; set; }
+    public long? BusinessPartnerProviderDriverId { get; set; }
 
     public decimal QuantityGallon { get; set; }
 
@@ -39,9 +39,11 @@ public partial class ShipmentFuelOrder
 
     public bool IsActive { get; set; }
 
+    public virtual AccountingFuelOrderType AccountingFuelOrderType { get; set; } = null!;
+
     public virtual BusinessPartnerFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
 
-    public virtual BusinessPartnerProviderDriver BusinessPartnerProviderDriver { get; set; } = null!;
+    public virtual BusinessPartnerProviderDriver? BusinessPartnerProviderDriver { get; set; }
 
     public virtual BusinessPartnerProviderTransportVehicle BusinessPartnerProviderTransportVehicle { get; set; } = null!;
 
@@ -49,9 +51,7 @@ public partial class ShipmentFuelOrder
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
-    public virtual ShipmentFreight ShipmentFreight { get; set; } = null!;
+    public virtual SettingCurrency SettingCurrency { get; set; } = null!;
 
-    public virtual ShipmentFuelOrderType ShipmentFuelOrderType { get; set; } = null!;
-
-    public virtual ShipmentGasStation ShipmentGasStation { get; set; } = null!;
+    public virtual SettingGasStation SettingGasStation { get; set; } = null!;
 }

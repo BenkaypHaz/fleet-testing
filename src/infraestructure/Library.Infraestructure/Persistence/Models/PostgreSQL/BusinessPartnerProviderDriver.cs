@@ -37,6 +37,8 @@ public partial class BusinessPartnerProviderDriver
 
     public bool IsActive { get; set; }
 
+    public virtual ICollection<AccountingFuelOrder> AccountingFuelOrders { get; set; } = new List<AccountingFuelOrder>();
+
     public virtual BusinessPartnerProviderProfile? BusinessPartnerProviderProfile { get; set; }
 
     public virtual ICollection<BusinessPartnerProviderTransportVehicle> BusinessPartnerProviderTransportVehicles { get; set; } = new List<BusinessPartnerProviderTransportVehicle>();
@@ -46,6 +48,4 @@ public partial class BusinessPartnerProviderDriver
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
     public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
-
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
 }

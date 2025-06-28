@@ -39,6 +39,26 @@ public partial class AuthUser
 
     public bool IsActive { get; set; }
 
+    public virtual ICollection<AccountingExpense> AccountingExpenseCreatedByNavigations { get; set; } = new List<AccountingExpense>();
+
+    public virtual ICollection<AccountingExpense> AccountingExpenseModifiedByNavigations { get; set; } = new List<AccountingExpense>();
+
+    public virtual ICollection<AccountingExpenseType> AccountingExpenseTypeCreatedByNavigations { get; set; } = new List<AccountingExpenseType>();
+
+    public virtual ICollection<AccountingExpenseType> AccountingExpenseTypeModifiedByNavigations { get; set; } = new List<AccountingExpenseType>();
+
+    public virtual ICollection<AccountingFuelOrder> AccountingFuelOrderCreatedByNavigations { get; set; } = new List<AccountingFuelOrder>();
+
+    public virtual ICollection<AccountingFuelOrder> AccountingFuelOrderModifiedByNavigations { get; set; } = new List<AccountingFuelOrder>();
+
+    public virtual ICollection<AccountingFuelOrderType> AccountingFuelOrderTypeCreatedByNavigations { get; set; } = new List<AccountingFuelOrderType>();
+
+    public virtual ICollection<AccountingFuelOrderType> AccountingFuelOrderTypeModifiedByNavigations { get; set; } = new List<AccountingFuelOrderType>();
+
+    public virtual ICollection<AccountingFuelPriceChangeHistory> AccountingFuelPriceChangeHistoryCreatedByNavigations { get; set; } = new List<AccountingFuelPriceChangeHistory>();
+
+    public virtual ICollection<AccountingFuelPriceChangeHistory> AccountingFuelPriceChangeHistoryModifiedByNavigations { get; set; } = new List<AccountingFuelPriceChangeHistory>();
+
     public virtual ICollection<AuthAuthorization> AuthAuthorizationCreatedByNavigations { get; set; } = new List<AuthAuthorization>();
 
     public virtual ICollection<AuthAuthorization> AuthAuthorizationModifiedByNavigations { get; set; } = new List<AuthAuthorization>();
@@ -121,10 +141,6 @@ public partial class AuthUser
 
     public virtual ICollection<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomerModifiedByNavigations { get; set; } = new List<SettingFreightPricingPerCustomer>();
 
-    public virtual ICollection<ShipmentExpense> ShipmentExpenseCreatedByNavigations { get; set; } = new List<ShipmentExpense>();
-
-    public virtual ICollection<ShipmentExpense> ShipmentExpenseModifiedByNavigations { get; set; } = new List<ShipmentExpense>();
-
     public virtual ICollection<ShipmentFreight> ShipmentFreightCreatedByNavigations { get; set; } = new List<ShipmentFreight>();
 
     public virtual ICollection<ShipmentFreight> ShipmentFreightModifiedByNavigations { get; set; } = new List<ShipmentFreight>();
@@ -132,10 +148,6 @@ public partial class AuthUser
     public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogCreatedByNavigations { get; set; } = new List<ShipmentFreightStatusLog>();
 
     public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogModifiedByNavigations { get; set; } = new List<ShipmentFreightStatusLog>();
-
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrderCreatedByNavigations { get; set; } = new List<ShipmentFuelOrder>();
-
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrderModifiedByNavigations { get; set; } = new List<ShipmentFuelOrder>();
 
     public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractCreatedByNavigations { get; set; } = new List<ShipmentProjectContract>();
 

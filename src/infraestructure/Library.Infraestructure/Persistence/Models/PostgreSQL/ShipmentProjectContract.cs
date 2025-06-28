@@ -9,6 +9,8 @@ public partial class ShipmentProjectContract
 
     public long CustomerProfileId { get; set; }
 
+    public long BusinessPartnerFuelOrderIssuerId { get; set; }
+
     public long SettingDispatchBranchId { get; set; }
 
     public long ContractNumber { get; set; }
@@ -17,7 +19,7 @@ public partial class ShipmentProjectContract
 
     public DateOnly EndDate { get; set; }
 
-    public int ExpectedFreight { get; set; }
+    public int ExpectedFreightQuantity { get; set; }
 
     public long CreatedBy { get; set; }
 
@@ -28,6 +30,8 @@ public partial class ShipmentProjectContract
     public DateTime? ModifiedDate { get; set; }
 
     public bool IsActive { get; set; }
+
+    public virtual BusinessPartnerFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 

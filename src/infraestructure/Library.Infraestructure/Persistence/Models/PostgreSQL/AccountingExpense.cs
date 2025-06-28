@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
-public partial class AuthRoleAuthorization
+public partial class AccountingExpense
 {
     public long Id { get; set; }
 
-    public long RoleId { get; set; }
+    public long ShipmentFreightId { get; set; }
 
-    public long AuthId { get; set; }
+    public long AccountingExpenseTypeId { get; set; }
 
-    public bool Read { get; set; }
+    public decimal Amount { get; set; }
 
-    public bool Cread { get; set; }
+    public string Currency { get; set; } = null!;
 
-    public bool Update { get; set; }
+    public string? Description { get; set; }
 
-    public bool Delete { get; set; }
+    public DateOnly ExpenseDate { get; set; }
 
     public long CreatedBy { get; set; }
 
@@ -29,11 +29,11 @@ public partial class AuthRoleAuthorization
 
     public bool IsActive { get; set; }
 
-    public virtual AuthAuthorization Auth { get; set; } = null!;
+    public virtual AccountingExpenseType AccountingExpenseType { get; set; } = null!;
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
-    public virtual AuthRole Role { get; set; } = null!;
+    public virtual ShipmentFreight ShipmentFreight { get; set; } = null!;
 }

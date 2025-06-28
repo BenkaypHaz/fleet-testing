@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Library.Infraestructure.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
@@ -15,6 +14,16 @@ public partial class DataBaseContext : DbContext
         : base(options)
     {
     }
+
+    public virtual DbSet<AccountingExpense> AccountingExpenses { get; set; }
+
+    public virtual DbSet<AccountingExpenseType> AccountingExpenseTypes { get; set; }
+
+    public virtual DbSet<AccountingFuelOrder> AccountingFuelOrders { get; set; }
+
+    public virtual DbSet<AccountingFuelOrderType> AccountingFuelOrderTypes { get; set; }
+
+    public virtual DbSet<AccountingFuelPriceChangeHistory> AccountingFuelPriceChangeHistories { get; set; }
 
     public virtual DbSet<AuthAuthorization> AuthAuthorizations { get; set; }
 
@@ -54,6 +63,8 @@ public partial class DataBaseContext : DbContext
 
     public virtual DbSet<CustomerWarehouse> CustomerWarehouses { get; set; }
 
+    public virtual DbSet<FreightProductType> FreightProductTypes { get; set; }
+
     public virtual DbSet<GeneralCity> GeneralCities { get; set; }
 
     public virtual DbSet<GeneralCountry> GeneralCountries { get; set; }
@@ -62,13 +73,13 @@ public partial class DataBaseContext : DbContext
 
     public virtual DbSet<GeneralRegion> GeneralRegions { get; set; }
 
+    public virtual DbSet<SettingCurrency> SettingCurrencies { get; set; }
+
     public virtual DbSet<SettingDispatchBranch> SettingDispatchBranches { get; set; }
 
     public virtual DbSet<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomers { get; set; }
 
-    public virtual DbSet<ShipmentExpense> ShipmentExpenses { get; set; }
-
-    public virtual DbSet<ShipmentExpenseType> ShipmentExpenseTypes { get; set; }
+    public virtual DbSet<SettingGasStation> SettingGasStations { get; set; }
 
     public virtual DbSet<ShipmentFreight> ShipmentFreights { get; set; }
 
@@ -78,19 +89,246 @@ public partial class DataBaseContext : DbContext
 
     public virtual DbSet<ShipmentFreightType> ShipmentFreightTypes { get; set; }
 
-    public virtual DbSet<ShipmentFuelOrder> ShipmentFuelOrders { get; set; }
-
-    public virtual DbSet<ShipmentFuelOrderType> ShipmentFuelOrderTypes { get; set; }
-
-    public virtual DbSet<ShipmentGasStation> ShipmentGasStations { get; set; }
-
     public virtual DbSet<ShipmentProjectContract> ShipmentProjectContracts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql(BaseHelper.GetConnectionString());
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=154.38.183.223;Database=FleetManager;Username=core;Password=nsMnM0tmhPBMX4;Port=5432;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AccountingExpense>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_accounting_expense_id");
+
+            entity.ToTable("accounting_expense", "accounting");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccountingExpenseTypeId).HasColumnName("accounting_expense_type_id");
+            entity.Property(e => e.Amount)
+                .HasPrecision(12, 2)
+                .HasColumnName("amount");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.Currency)
+                .HasMaxLength(10)
+                .HasColumnName("currency");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.ExpenseDate).HasColumnName("expense_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
+
+            entity.HasOne(d => d.AccountingExpenseType).WithMany(p => p.AccountingExpenses)
+                .HasForeignKey(d => d.AccountingExpenseTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_expense_accounting_expense_type_id");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AccountingExpenseCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_expense_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AccountingExpenseModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_accounting_expense_modified_by");
+
+            entity.HasOne(d => d.ShipmentFreight).WithMany(p => p.AccountingExpenses)
+                .HasForeignKey(d => d.ShipmentFreightId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_expense_shipment_freight_id");
+        });
+
+        modelBuilder.Entity<AccountingExpenseType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_accounting_expense_type_id");
+
+            entity.ToTable("accounting_expense_type", "accounting");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AccountingExpenseTypeCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_expense_type_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AccountingExpenseTypeModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_accounting_expense_type_modified_by");
+        });
+
+        modelBuilder.Entity<AccountingFuelOrder>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_accounting_fuel_order_id");
+
+            entity.ToTable("accounting_fuel_order", "accounting");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccountingFuelOrderTypeId).HasColumnName("accounting_fuel_order_type_id");
+            entity.Property(e => e.BusinessPartnerFuelOrderIssuerId).HasColumnName("business_partner_fuel_order_issuer_id");
+            entity.Property(e => e.BusinessPartnerProviderDriverId).HasColumnName("business_partner_provider_driver_id");
+            entity.Property(e => e.BusinessPartnerProviderTransportVehicleId).HasColumnName("business_partner_provider_transport_vehicle_id");
+            entity.Property(e => e.CostPerGallon)
+                .HasPrecision(12, 2)
+                .HasColumnName("cost_per_gallon");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.Currency)
+                .HasMaxLength(10)
+                .HasColumnName("currency");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.IssuedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("issued_date");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.QuantityGallon)
+                .HasPrecision(12, 2)
+                .HasColumnName("quantity_gallon");
+            entity.Property(e => e.SettingCurrencyId).HasColumnName("setting_currency_id");
+            entity.Property(e => e.SettingGasStationId).HasColumnName("setting_gas_station_id");
+            entity.Property(e => e.TotalCost)
+                .HasPrecision(12, 2)
+                .HasColumnName("total_cost");
+
+            entity.HasOne(d => d.AccountingFuelOrderType).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.AccountingFuelOrderTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_accounting_fuel_order_type_id");
+
+            entity.HasOne(d => d.BusinessPartnerFuelOrderIssuer).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.BusinessPartnerFuelOrderIssuerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_business_partner_fuel_order_issuer_id");
+
+            entity.HasOne(d => d.BusinessPartnerProviderDriver).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.BusinessPartnerProviderDriverId)
+                .HasConstraintName("fk_accounting_fuel_order_business_partner_provider_driver_id");
+
+            entity.HasOne(d => d.BusinessPartnerProviderTransportVehicle).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.BusinessPartnerProviderTransportVehicleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_business_partner_transport_vehicle_id");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AccountingFuelOrderCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AccountingFuelOrderModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_accounting_fuel_order_modified_by");
+
+            entity.HasOne(d => d.SettingCurrency).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.SettingCurrencyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_setting_currency_id");
+
+            entity.HasOne(d => d.SettingGasStation).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.SettingGasStationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_setting_gas_station_id");
+        });
+
+        modelBuilder.Entity<AccountingFuelOrderType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_accounting_fuel_order_type_id");
+
+            entity.ToTable("accounting_fuel_order_type", "accounting");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.CostPerGallon)
+                .HasPrecision(12, 2)
+                .HasColumnName("cost_per_gallon");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.SerialCode)
+                .HasMaxLength(2)
+                .HasColumnName("serial_code");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AccountingFuelOrderTypeCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_type_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AccountingFuelOrderTypeModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_accounting_fuel_order_type_modified_by");
+        });
+
+        modelBuilder.Entity<AccountingFuelPriceChangeHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_accounting_fuel_price_change_history_id");
+
+            entity.ToTable("accounting_fuel_price_change_history", "accounting");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.AccountingFuelOrderTypeId).HasColumnName("accounting_fuel_order_type_id");
+            entity.Property(e => e.CostPerGallon)
+                .HasPrecision(10, 2)
+                .HasColumnName("cost_per_gallon");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+
+            entity.HasOne(d => d.AccountingFuelOrderType).WithMany(p => p.AccountingFuelPriceChangeHistories)
+                .HasForeignKey(d => d.AccountingFuelOrderTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_price_change_history_fuel_order_type_id");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AccountingFuelPriceChangeHistoryCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_price_change_history_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AccountingFuelPriceChangeHistoryModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_accounting_fuel_price_change_history_modified_by");
+        });
+
         modelBuilder.Entity<AuthAuthorization>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_auth_authorization_id");
@@ -99,13 +337,17 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Description)
                 .HasMaxLength(300)
                 .HasColumnName("description");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.ModuleId).HasColumnName("module_id");
             entity.Property(e => e.RouteValue)
                 .HasMaxLength(300)
@@ -133,10 +375,14 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(60)
                 .HasColumnName("name");
@@ -159,13 +405,17 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Description)
                 .HasMaxLength(200)
                 .HasColumnName("description");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AuthRoleCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
@@ -185,13 +435,17 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AuthId).HasColumnName("auth_id");
-            entity.Property(e => e.Create).HasColumnName("create");
+            entity.Property(e => e.Cread).HasColumnName("cread");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Delete).HasColumnName("delete");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Read).HasColumnName("read");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Update).HasColumnName("update");
@@ -225,7 +479,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BirthDate).HasColumnName("birth_date");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Dni)
                 .HasMaxLength(15)
                 .HasColumnName("dni");
@@ -243,7 +499,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("last_name");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Password).HasColumnName("password");
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(15)
@@ -272,8 +530,12 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.ExpirationDate).HasColumnName("expiration_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.ExpirationDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("expiration_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Token).HasColumnName("token");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -296,10 +558,14 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -362,7 +628,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BusinessPartnerProviderProfileId).HasColumnName("business_partner_provider_profile_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.DateOfBirth).HasColumnName("date_of_birth");
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
@@ -377,7 +645,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("last_name");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.NationalId)
                 .HasMaxLength(20)
                 .HasColumnName("national_id");
@@ -416,7 +686,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.BusinessPartnerProviderProfileCategoryId).HasColumnName("business_partner_provider_profile_category_id");
             entity.Property(e => e.BusinessPartnerProviderProfileTypeId).HasColumnName("business_partner_provider_profile_type_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
                 .HasColumnName("email");
@@ -429,7 +701,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("legal_name");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .HasColumnName("phone");
@@ -482,7 +756,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.BusinessPartnerPositionTypeId).HasColumnName("business_partner_position_type_id");
             entity.Property(e => e.BusinessPartnerProviderProfileId).HasColumnName("business_partner_provider_profile_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
                 .HasColumnName("email");
@@ -494,7 +770,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("last_name");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.NationalId)
                 .HasMaxLength(20)
                 .HasColumnName("national_id");
@@ -552,14 +830,18 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("color");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Model)
                 .HasMaxLength(50)
                 .HasColumnName("model");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.PlateNumber)
                 .HasMaxLength(20)
                 .HasColumnName("plate_number");
@@ -608,7 +890,9 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.CustomerProfileId).HasColumnName("customer_profile_id");
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
@@ -621,7 +905,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("last_name");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.NationalId)
                 .HasMaxLength(20)
                 .HasColumnName("national_id");
@@ -653,7 +939,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
                 .HasColumnName("email");
@@ -666,7 +954,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("legal_name");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
@@ -699,7 +989,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.CustomerProfileId).HasColumnName("customer_profile_id");
             entity.Property(e => e.GeneralCityId).HasColumnName("general_city_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
@@ -710,7 +1002,9 @@ public partial class DataBaseContext : DbContext
                 .HasPrecision(11, 8)
                 .HasColumnName("longitud");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
@@ -735,6 +1029,22 @@ public partial class DataBaseContext : DbContext
                 .HasConstraintName("fk_customer_warehouse_modified_by");
         });
 
+        modelBuilder.Entity<FreightProductType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_freight_product_type_id");
+
+            entity.ToTable("freight_product_type", "shipment");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.Quality).HasColumnName("quality");
+        });
+
         modelBuilder.Entity<GeneralCity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_general_city_id");
@@ -743,10 +1053,14 @@ public partial class DataBaseContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(150)
                 .HasColumnName("name");
@@ -778,13 +1092,17 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(10)
                 .HasColumnName("code");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.IsoCode)
                 .HasMaxLength(10)
                 .HasColumnName("iso_code");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(150)
                 .HasColumnName("name");
@@ -809,7 +1127,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Class)
                 .HasMaxLength(255)
                 .HasColumnName("class");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.ErrorDescription).HasColumnName("error_description");
             entity.Property(e => e.LineNumber).HasColumnName("line_number");
             entity.Property(e => e.Method)
@@ -829,10 +1149,14 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CountryId).HasColumnName("country_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(150)
                 .HasColumnName("name");
@@ -852,6 +1176,21 @@ public partial class DataBaseContext : DbContext
                 .HasConstraintName("fk_general_region_modified_by");
         });
 
+        modelBuilder.Entity<SettingCurrency>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_ssetting_currency_id");
+
+            entity.ToTable("setting_currency", "setting");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+        });
+
         modelBuilder.Entity<SettingDispatchBranch>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_setting_dispatch_branch_id");
@@ -862,7 +1201,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.GeneralCityId).HasColumnName("general_city_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Latitud)
@@ -872,7 +1213,9 @@ public partial class DataBaseContext : DbContext
                 .HasPrecision(11, 8)
                 .HasColumnName("longitud");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
@@ -903,11 +1246,15 @@ public partial class DataBaseContext : DbContext
                 .HasPrecision(12, 2)
                 .HasColumnName("cost");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.CustomerWarehouseId).HasColumnName("customer_warehouse_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Price)
                 .HasPrecision(12, 2)
                 .HasColumnName("price");
@@ -933,60 +1280,34 @@ public partial class DataBaseContext : DbContext
                 .HasConstraintName("fk_setting_freight_dispatch_branch");
         });
 
-        modelBuilder.Entity<ShipmentExpense>(entity =>
+        modelBuilder.Entity<SettingGasStation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_expense_id");
+            entity.HasKey(e => e.Id).HasName("pk_setting_gas_station_id");
 
-            entity.ToTable("shipment_expense", "shipment");
+            entity.ToTable("setting_gas_station", "setting");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount)
-                .HasPrecision(12, 2)
-                .HasColumnName("amount");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.Currency)
-                .HasMaxLength(10)
-                .HasColumnName("currency");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.ExpenseDate).HasColumnName("expense_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.GeneralCityId).HasColumnName("general_city_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.ShipmentExpenseTypeId).HasColumnName("shipment_expense_type_id");
-            entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentExpenseCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_expense_created_by");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentExpenseModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_expense_modified_by");
-
-            entity.HasOne(d => d.ShipmentExpenseType).WithMany(p => p.ShipmentExpenses)
-                .HasForeignKey(d => d.ShipmentExpenseTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_expense_shipment_expense_type_id");
-
-            entity.HasOne(d => d.ShipmentFreight).WithMany(p => p.ShipmentExpenses)
-                .HasForeignKey(d => d.ShipmentFreightId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_expense_shipment_freight_id");
-        });
-
-        modelBuilder.Entity<ShipmentExpenseType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_expense_type_id");
-
-            entity.ToTable("shipment_expense_type", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+
+            entity.HasOne(d => d.GeneralCity).WithMany(p => p.SettingGasStations)
+                .HasForeignKey(d => d.GeneralCityId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_setting_gas_station_general_city_id");
         });
 
         modelBuilder.Entity<ShipmentFreight>(entity =>
@@ -1002,11 +1323,16 @@ public partial class DataBaseContext : DbContext
                 .HasPrecision(12, 2)
                 .HasColumnName("cost");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.CustomerWarehouseId).HasColumnName("customer_warehouse_id");
+            entity.Property(e => e.FreightProductTypeId).HasColumnName("freight_product_type_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.Observations).HasColumnName("observations");
             entity.Property(e => e.Price)
                 .HasPrecision(12, 2)
@@ -1035,6 +1361,11 @@ public partial class DataBaseContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_shipment_freight_customer_warehouse");
 
+            entity.HasOne(d => d.FreightProductType).WithMany(p => p.ShipmentFreights)
+                .HasForeignKey(d => d.FreightProductTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_freight_product_type");
+
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentFreightModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
                 .HasConstraintName("fk_shipment_freight_modified_by");
@@ -1061,7 +1392,9 @@ public partial class DataBaseContext : DbContext
 
             entity.ToTable("shipment_freight_status", "shipment");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -1077,10 +1410,14 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Comments).HasColumnName("comments");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
             entity.Property(e => e.ShipmentFreightStatusId).HasColumnName("shipment_freight_status_id");
 
@@ -1110,116 +1447,13 @@ public partial class DataBaseContext : DbContext
 
             entity.ToTable("shipment_freight_type", "shipment");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ShipmentFuelOrder>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_fuel_order_id");
-
-            entity.ToTable("shipment_fuel_order", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BusinessPartnerFuelOrderIssuerId).HasColumnName("business_partner_fuel_order_issuer_id");
-            entity.Property(e => e.BusinessPartnerProviderDriverId).HasColumnName("business_partner_provider_driver_id");
-            entity.Property(e => e.BusinessPartnerProviderTransportVehicleId).HasColumnName("business_partner_provider_transport_vehicle_id");
-            entity.Property(e => e.CostPerGallon)
-                .HasPrecision(12, 2)
-                .HasColumnName("cost_per_gallon");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-            entity.Property(e => e.Currency)
-                .HasMaxLength(10)
-                .HasColumnName("currency");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.IssuedDate).HasColumnName("issued_date");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
-            entity.Property(e => e.QuantityGallon)
-                .HasPrecision(12, 2)
-                .HasColumnName("quantity_gallon");
-            entity.Property(e => e.ShipmentFreightId).HasColumnName("shipment_freight_id");
-            entity.Property(e => e.ShipmentFuelOrderTypeId).HasColumnName("shipment_fuel_order_type_id");
-            entity.Property(e => e.ShipmentGasStationId).HasColumnName("shipment_gas_station_id");
-            entity.Property(e => e.TotalCost)
-                .HasPrecision(12, 2)
-                .HasColumnName("total_cost");
-
-            entity.HasOne(d => d.BusinessPartnerFuelOrderIssuer).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.BusinessPartnerFuelOrderIssuerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_business_partner_fuel_order_issuer_id");
-
-            entity.HasOne(d => d.BusinessPartnerProviderDriver).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.BusinessPartnerProviderDriverId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_business_partner_provider_driver_id");
-
-            entity.HasOne(d => d.BusinessPartnerProviderTransportVehicle).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.BusinessPartnerProviderTransportVehicleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_business_partner_transport_vehicle_id");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentFuelOrderCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_created_by");
-
-            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentFuelOrderModifiedByNavigations)
-                .HasForeignKey(d => d.ModifiedBy)
-                .HasConstraintName("fk_shipment_fuel_order_modified_by");
-
-            entity.HasOne(d => d.ShipmentFreight).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ShipmentFreightId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_shipment_freight_id");
-
-            entity.HasOne(d => d.ShipmentFuelOrderType).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ShipmentFuelOrderTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_shipment_fuel_order_type_id");
-
-            entity.HasOne(d => d.ShipmentGasStation).WithMany(p => p.ShipmentFuelOrders)
-                .HasForeignKey(d => d.ShipmentGasStationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_fuel_order_shipment_gas_station_id");
-        });
-
-        modelBuilder.Entity<ShipmentFuelOrderType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_fuel_order_type_id");
-
-            entity.ToTable("shipment_fuel_order_type", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<ShipmentGasStation>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_shipment_gas_station_id");
-
-            entity.ToTable("shipment_gas_station", "shipment");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Address).HasColumnName("address");
-            entity.Property(e => e.GeneralCityId).HasColumnName("general_city_id");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-
-            entity.HasOne(d => d.GeneralCity).WithMany(p => p.ShipmentGasStations)
-                .HasForeignKey(d => d.GeneralCityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_gas_station_general_city_id");
         });
 
         modelBuilder.Entity<ShipmentProjectContract>(entity =>
@@ -1229,17 +1463,27 @@ public partial class DataBaseContext : DbContext
             entity.ToTable("shipment_project_contract", "shipment");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BusinessPartnerFuelOrderIssuerId).HasColumnName("business_partner_fuel_order_issuer_id");
             entity.Property(e => e.ContractNumber).HasColumnName("contract_number");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
             entity.Property(e => e.CustomerProfileId).HasColumnName("customer_profile_id");
             entity.Property(e => e.EndDate).HasColumnName("end_date");
-            entity.Property(e => e.ExpectedFreight).HasColumnName("expected_freight");
+            entity.Property(e => e.ExpectedFreightQuantity).HasColumnName("expected_freight_quantity");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
             entity.Property(e => e.SettingDispatchBranchId).HasColumnName("setting_dispatch_branch_id");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
+
+            entity.HasOne(d => d.BusinessPartnerFuelOrderIssuer).WithMany(p => p.ShipmentProjectContracts)
+                .HasForeignKey(d => d.BusinessPartnerFuelOrderIssuerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_project_contract_business_partner_fuel_order_issuer");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentProjectContractCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
@@ -1260,7 +1504,6 @@ public partial class DataBaseContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_shipment_project_contract_setting_dispatch_branch");
         });
-        modelBuilder.HasSequence("auth_user_id_seq");
 
         OnModelCreatingPartial(modelBuilder);
     }

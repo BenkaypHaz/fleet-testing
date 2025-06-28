@@ -19,6 +19,8 @@ public partial class ShipmentFreight
 
     public long ShipmentFreightTypeId { get; set; }
 
+    public long FreightProductTypeId { get; set; }
+
     public decimal Price { get; set; }
 
     public decimal Cost { get; set; }
@@ -35,6 +37,8 @@ public partial class ShipmentFreight
 
     public bool IsActive { get; set; }
 
+    public virtual ICollection<AccountingExpense> AccountingExpenses { get; set; } = new List<AccountingExpense>();
+
     public virtual BusinessPartnerProviderDriver BusinessPartnerProviderDriver { get; set; } = null!;
 
     public virtual BusinessPartnerProviderTransportVehicle BusinessPartnerProviderTransportVehicle { get; set; } = null!;
@@ -43,17 +47,15 @@ public partial class ShipmentFreight
 
     public virtual CustomerWarehouse CustomerWarehouse { get; set; } = null!;
 
-    public virtual AuthUser? ModifiedByNavigation { get; set; }
+    public virtual FreightProductType FreightProductType { get; set; } = null!;
 
-    public virtual ICollection<ShipmentExpense> ShipmentExpenses { get; set; } = new List<ShipmentExpense>();
+    public virtual AuthUser? ModifiedByNavigation { get; set; }
 
     public virtual ShipmentFreightStatus ShipmentFreightStatus { get; set; } = null!;
 
     public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogs { get; set; } = new List<ShipmentFreightStatusLog>();
 
     public virtual ShipmentFreightType ShipmentFreightType { get; set; } = null!;
-
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
 
     public virtual ShipmentProjectContract ShipmentProjectContract { get; set; } = null!;
 }

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
-public partial class ShipmentFuelOrderType
+public partial class FreightProductType
 {
     public long Id { get; set; }
 
     public string Name { get; set; } = null!;
 
+    public int Quality { get; set; }
+
     public bool IsActive { get; set; }
 
-    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
+    public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
 }
