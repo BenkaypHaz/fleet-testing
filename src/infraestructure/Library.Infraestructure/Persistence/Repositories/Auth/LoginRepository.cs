@@ -78,8 +78,8 @@ namespace Library.Infraestructure.Persistence.Repositories.Auth
             };
 
             var token = new JwtSecurityToken(
-                issuer: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
-                audience: BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+                issuer: BaseHelper.GetEnvVariable("PROJECT_DOMAIN"),
+                audience: BaseHelper.GetEnvVariable("PROJECT_DOMAIN"),
                 claims: claims,
                 expires: DateTime.Now.AddMonths(3),
                 signingCredentials: creds

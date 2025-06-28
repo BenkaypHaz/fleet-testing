@@ -36,8 +36,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
-            ValidAudience = BaseHelper.GetEnvVariable("PROJECT_SERVICES_HOST"),
+            ValidIssuer = BaseHelper.GetEnvVariable("PROJECT_DOMAIN"),
+            ValidAudience = BaseHelper.GetEnvVariable("PROJECT_DOMAIN"),
             IssuerSigningKey = issuerSigningKey
         };
         options.Events = new JwtBearerEvents
