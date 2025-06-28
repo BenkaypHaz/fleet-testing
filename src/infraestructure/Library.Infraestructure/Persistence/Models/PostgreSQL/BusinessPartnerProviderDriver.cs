@@ -39,9 +39,13 @@ public partial class BusinessPartnerProviderDriver
 
     public virtual BusinessPartnerProviderProfile? BusinessPartnerProviderProfile { get; set; }
 
-    public virtual ICollection<BusinessPartnerproviderTransportVehicle> BusinessPartnerproviderTransportVehicles { get; set; } = new List<BusinessPartnerproviderTransportVehicle>();
+    public virtual ICollection<BusinessPartnerProviderTransportVehicle> BusinessPartnerProviderTransportVehicles { get; set; } = new List<BusinessPartnerProviderTransportVehicle>();
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
+
+    public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
+
+    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
 }

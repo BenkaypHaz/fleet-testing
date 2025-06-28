@@ -34,4 +34,6 @@ public partial class GeneralCity
     public virtual GeneralRegion Region { get; set; } = null!;
 
     public virtual ICollection<SettingDispatchBranch> SettingDispatchBranches { get; set; } = new List<SettingDispatchBranch>();
+
+    public virtual ICollection<ShipmentGasStation> ShipmentGasStations { get; set; } = new List<ShipmentGasStation>();
 }

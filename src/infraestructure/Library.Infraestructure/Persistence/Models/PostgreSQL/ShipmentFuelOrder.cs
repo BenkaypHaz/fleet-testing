@@ -11,13 +11,13 @@ public partial class ShipmentFuelOrder
 
     public long ShipmentFuelOrderTypeId { get; set; }
 
-    public long ProviderTransportVehicleId { get; set; }
+    public long BusinessPartnerProviderTransportVehicleId { get; set; }
 
-    public long FuelOrderIssuerId { get; set; }
+    public long BusinessPartnerFuelOrderIssuerId { get; set; }
 
     public long ShipmentGasStationId { get; set; }
 
-    public long ProviderDriverId { get; set; }
+    public long BusinessPartnerProviderDriverId { get; set; }
 
     public decimal QuantityGallon { get; set; }
 
@@ -39,15 +39,15 @@ public partial class ShipmentFuelOrder
 
     public bool IsActive { get; set; }
 
+    public virtual BusinessPartnerFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
+
+    public virtual BusinessPartnerProviderDriver BusinessPartnerProviderDriver { get; set; } = null!;
+
+    public virtual BusinessPartnerProviderTransportVehicle BusinessPartnerProviderTransportVehicle { get; set; } = null!;
+
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
-    public virtual BusinessProviderProfile FuelOrderIssuer { get; set; } = null!;
-
     public virtual AuthUser? ModifiedByNavigation { get; set; }
-
-    public virtual BusinessProviderDriver ProviderDriver { get; set; } = null!;
-
-    public virtual BusinessProviderTransportVehicle ProviderTransportVehicle { get; set; } = null!;
 
     public virtual ShipmentFreight ShipmentFreight { get; set; } = null!;
 

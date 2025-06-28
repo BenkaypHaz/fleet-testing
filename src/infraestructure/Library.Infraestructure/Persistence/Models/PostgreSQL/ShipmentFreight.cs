@@ -9,11 +9,11 @@ public partial class ShipmentFreight
 
     public long ShipmentProjectContractId { get; set; }
 
-    public long ProviderTransportVehicleId { get; set; }
+    public long BusinessPartnerProviderTransportVehicleId { get; set; }
 
     public long CustomerWarehouseId { get; set; }
 
-    public long ProviderDriverId { get; set; }
+    public long BusinessPartnerProviderDriverId { get; set; }
 
     public long ShipmentFreightStatusId { get; set; }
 
@@ -35,15 +35,15 @@ public partial class ShipmentFreight
 
     public bool IsActive { get; set; }
 
+    public virtual BusinessPartnerProviderDriver BusinessPartnerProviderDriver { get; set; } = null!;
+
+    public virtual BusinessPartnerProviderTransportVehicle BusinessPartnerProviderTransportVehicle { get; set; } = null!;
+
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual CustomerWarehouse CustomerWarehouse { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
-
-    public virtual BusinessProviderDriver ProviderDriver { get; set; } = null!;
-
-    public virtual BusinessProviderTransportVehicle ProviderTransportVehicle { get; set; } = null!;
 
     public virtual ICollection<ShipmentExpense> ShipmentExpenses { get; set; } = new List<ShipmentExpense>();
 

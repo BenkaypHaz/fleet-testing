@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
-public partial class BusinessPartnerproviderTransportVehicle
+public partial class BusinessPartnerProviderTransportVehicle
 {
     public long Id { get; set; }
 
@@ -44,4 +44,8 @@ public partial class BusinessPartnerproviderTransportVehicle
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
+
+    public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
+
+    public virtual ICollection<ShipmentFuelOrder> ShipmentFuelOrders { get; set; } = new List<ShipmentFuelOrder>();
 }

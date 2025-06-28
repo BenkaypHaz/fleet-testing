@@ -7,7 +7,7 @@ public partial class BusinessPartnerProviderProfile
 {
     public long Id { get; set; }
 
-    public long BusinessProviderProfileTypeId { get; set; }
+    public long BusinessPartnerProviderProfileTypeId { get; set; }
 
     public long BusinessPartnerProviderProfileCategoryId { get; set; }
 
@@ -41,9 +41,9 @@ public partial class BusinessPartnerProviderProfile
 
     public virtual ICollection<BusinessPartnerProviderProfileContactPerson> BusinessPartnerProviderProfileContactPeople { get; set; } = new List<BusinessPartnerProviderProfileContactPerson>();
 
-    public virtual ICollection<BusinessPartnerproviderTransportVehicle> BusinessPartnerproviderTransportVehicles { get; set; } = new List<BusinessPartnerproviderTransportVehicle>();
+    public virtual BusinessPartnerProviderProfileType BusinessPartnerProviderProfileType { get; set; } = null!;
 
-    public virtual BusinessPartnerProviderProfileType BusinessProviderProfileType { get; set; } = null!;
+    public virtual ICollection<BusinessPartnerProviderTransportVehicle> BusinessPartnerProviderTransportVehicles { get; set; } = new List<BusinessPartnerProviderTransportVehicle>();
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 

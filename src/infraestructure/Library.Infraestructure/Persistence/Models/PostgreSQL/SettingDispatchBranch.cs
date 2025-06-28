@@ -36,4 +36,6 @@ public partial class SettingDispatchBranch
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
     public virtual ICollection<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomers { get; set; } = new List<SettingFreightPricingPerCustomer>();
+
+    public virtual ICollection<ShipmentProjectContract> ShipmentProjectContracts { get; set; } = new List<ShipmentProjectContract>();
 }
