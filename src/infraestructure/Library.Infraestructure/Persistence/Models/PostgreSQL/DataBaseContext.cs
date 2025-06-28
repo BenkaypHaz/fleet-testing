@@ -90,6 +90,8 @@ public partial class DataBaseContext : DbContext
     public virtual DbSet<ShipmentFreightType> ShipmentFreightTypes { get; set; }
 
     public virtual DbSet<ShipmentProjectContract> ShipmentProjectContracts { get; set; }
+    public virtual DbSet<BusinessPartnerVehicleModel> BusinessPartnerVehicleModel { get; set; }
+    public virtual DbSet<BusinessPartnerVehicleBrand> BusinessPartnerVehicleBrand { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -1401,6 +1403,67 @@ public partial class DataBaseContext : DbContext
                 .HasColumnName("name");
         });
 
+        modelBuilder.Entity<BusinessPartnerVehicleBrand>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_vehicle_brand_id");
+
+            entity.ToTable("business_partner_vehicle_brand", "business_partner");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessPartnerVehicleBrandCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_business_partner_vehicle_brand_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessPartnerVehicleBrandModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_business_partner_vehicle_brand_modified_by");
+        });
+
+        modelBuilder.Entity<BusinessPartnerVehicleModel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_business_partner_vehicle_model_id");
+
+            entity.ToTable("business_partner_vehicle_model", "business_partner");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BrandId).HasColumnName("brand_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.BusinessPartnerVehicleModelCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_business_partner_vehicle_model_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.BusinessPartnerVehicleModelModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_business_partner_vehicle_model_modified_by");
+        });
+
         modelBuilder.Entity<ShipmentFreightStatusLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_shipment_freight_status_log_id");
@@ -1455,6 +1518,7 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("name");
         });
+
 
         modelBuilder.Entity<ShipmentProjectContract>(entity =>
         {
