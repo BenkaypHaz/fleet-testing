@@ -108,7 +108,7 @@ namespace Library.Infraestructure.Common.Middlewares
                     new ToEmailsDto { NameRecipient = "Equipo IT", EmailRecipient = "info@mindsetgx.com" }
                 };
                 await MailDeliveryHelper.SendNoReplyEmail(
-                    subject: "🚨 URGENTE: Fallo en Monitoreo de Excepciones - Sentry Inaccesible",
+                    subject: "🚨 URGENTE: Fallo en Monitoreo de Excepciones - Sentry Inaccesible en FleetManager",
                     toEmails: toEmails,
                     template: emailTemplate,
                     null, 
