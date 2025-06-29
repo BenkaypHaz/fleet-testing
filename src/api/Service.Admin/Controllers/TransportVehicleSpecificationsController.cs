@@ -28,7 +28,7 @@ namespace Service.Admin.Controllers
         }
 
         [HttpGet("models")]
-        public async Task<ActionResult<GenericResponseHandler<List<VehicleModelReadDto>>>> GetModels([FromQuery] long? brandId, FilterOptionsDto filterOptions)
+        public async Task<ActionResult<GenericResponseHandler<List<VehicleModelReadDto>>>> GetModels([FromQuery] long? brandId, [FromQuery] FilterOptionsDto filterOptions)
         {
             var result = await _unitOfWork.VehicleModelRepository.Get(brandId, filterOptions);
             return StatusCode(result.statusCode, result);
