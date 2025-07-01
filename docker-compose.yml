@@ -1,6 +1,6 @@
 services:
   fleetmanager.service.admin:
-    image: ${PROJECT_DOCKER_REGISTRY}/fleetmanager-service-admin:latest
+    image: malcommedina/fleetmanager-service-admin:latest
     restart: always
     build:
       context: .

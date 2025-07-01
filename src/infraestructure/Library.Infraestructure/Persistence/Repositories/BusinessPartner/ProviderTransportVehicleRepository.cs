@@ -52,6 +52,8 @@ namespace Library.Infraestructure.Persistence.Repositories.BusinessPartner
         public async Task<GenericResponseHandler<long?>> Create(TransportVehicleCreateDto payload, long userId)
         {
            
+
+
             var existingVehicle = await _context.BusinessPartnerProviderTransportVehicles
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.PlateNumber.ToLower() == payload.PlateNumber.ToLower());

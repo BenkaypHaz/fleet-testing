@@ -101,6 +101,14 @@ public partial class AuthUser
 
     public virtual ICollection<BusinessPartnerProviderTransportVehicle> BusinessPartnerProviderTransportVehicleModifiedByNavigations { get; set; } = new List<BusinessPartnerProviderTransportVehicle>();
 
+    public virtual ICollection<BusinessPartnerVehicleBrand> BusinessPartnerVehicleBrandCreatedByNavigations { get; set; } = new List<BusinessPartnerVehicleBrand>();
+
+    public virtual ICollection<BusinessPartnerVehicleBrand> BusinessPartnerVehicleBrandModifiedByNavigations { get; set; } = new List<BusinessPartnerVehicleBrand>();
+
+    public virtual ICollection<BusinessPartnerVehicleModel> BusinessPartnerVehicleModelCreatedByNavigations { get; set; } = new List<BusinessPartnerVehicleModel>();
+
+    public virtual ICollection<BusinessPartnerVehicleModel> BusinessPartnerVehicleModelModifiedByNavigations { get; set; } = new List<BusinessPartnerVehicleModel>();
+
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 
     public virtual ICollection<CustomerContactPerson> CustomerContactPersonCreatedByNavigations { get; set; } = new List<CustomerContactPerson>();
@@ -152,12 +160,4 @@ public partial class AuthUser
     public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractCreatedByNavigations { get; set; } = new List<ShipmentProjectContract>();
 
     public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractModifiedByNavigations { get; set; } = new List<ShipmentProjectContract>();
-    public virtual ICollection<BusinessPartnerVehicleBrand> BusinessPartnerVehicleBrandCreatedByNavigations { get; set; } = new List<BusinessPartnerVehicleBrand>();
-
-    public virtual ICollection<BusinessPartnerVehicleBrand> BusinessPartnerVehicleBrandModifiedByNavigations { get; set; } = new List<BusinessPartnerVehicleBrand>();
-
-    public virtual ICollection<BusinessPartnerVehicleModel> BusinessPartnerVehicleModelCreatedByNavigations { get; set; } = new List<BusinessPartnerVehicleModel>();
-
-    public virtual ICollection<BusinessPartnerVehicleModel> BusinessPartnerVehicleModelModifiedByNavigations { get; set; } = new List<BusinessPartnerVehicleModel>();
-
 }

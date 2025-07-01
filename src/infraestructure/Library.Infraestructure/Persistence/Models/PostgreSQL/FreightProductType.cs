@@ -9,7 +9,7 @@ public partial class FreightProductType
 
     public string Name { get; set; } = null!;
 
-    public int Quality { get; set; }
+    public int Quantity { get; set; }
 
     public bool IsActive { get; set; }
 

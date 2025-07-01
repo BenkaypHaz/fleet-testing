@@ -23,7 +23,7 @@ namespace Library.Infraestructure.Persistence.Repositories.BusinessPartner
         public async Task<GenericResponseHandler<List<VehicleModelReadDto>>> Get(long? brandId, FilterOptionsDto pagination)
         {
          
-            var query = _context.BusinessPartnerVehicleModel
+            var query = _context.BusinessPartnerVehicleModels
                 .Where(x => x.IsActive)
                 .AsNoTracking();
 

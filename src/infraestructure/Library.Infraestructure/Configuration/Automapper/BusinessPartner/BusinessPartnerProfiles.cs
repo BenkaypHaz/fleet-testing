@@ -1,6 +1,7 @@
 ﻿using Library.Infraestructure.Persistence.DTOs.BusinessPartner.CustomerWarehouse.Read;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ProviderDriver.Read;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ProviderProfile.Read;
+using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ShipmentFreight.Create;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.TransportVehicle.Create;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.TransportVehicle.Read;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.VehicleBrand.Read;
@@ -37,6 +38,12 @@ namespace Library.Infraestructure.Configuration.Automapper.BusinessPartner
 
             #region Customer Warehouse
             CreateMap<CustomerWarehouse, CustomerWarehouseReadDto>();
+            #endregion
+
+            #region Shipment Freight
+            CreateMap<ShipmentFreightCreateDto, ShipmentFreight>()
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
+                   .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
             #endregion
         }
     }
