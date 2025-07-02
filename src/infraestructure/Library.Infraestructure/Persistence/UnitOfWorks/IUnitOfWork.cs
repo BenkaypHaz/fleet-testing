@@ -39,6 +39,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         #region Shipment
         ShipmentFreightRepository ShipmentFreightRepository { get; }
         ShipmentProjectContractRepository ShipmentProjectContractRepository { get; }
+        ShipmentFreightTypeRepository ShipmentFreightTypeRepository { get; }
         #endregion
     }
 }

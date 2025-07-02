@@ -83,6 +83,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         #region Shipment
         private ShipmentFreightRepository? _ShipmentFreightRepository;
         private ShipmentProjectContractRepository _ShipmentProjectContractRepository;
+        private ShipmentFreightTypeRepository? _ShipmentFreightTypeRepository;
         #endregion
 
         #region Shipment Properties
@@ -91,6 +92,9 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
          
         public ShipmentProjectContractRepository ShipmentProjectContractRepository =>
             _ShipmentProjectContractRepository ??= new ShipmentProjectContractRepository(_context, _mapper);   
+
+        public ShipmentFreightTypeRepository ShipmentFreightTypeRepository =>   
+            _ShipmentFreightTypeRepository ??= new ShipmentFreightTypeRepository(_context, _mapper);    
         #endregion
 
     }

@@ -27,14 +27,17 @@ namespace Library.Infraestructure.Persistence.Repositories.shipment
         }
         public async Task<GenericResponseHandler<List<ShipmentProjectContractReadDto>>> Get()
         {
-        
-                var data = await _context.ShipmentProjectContracts
-                    .AsNoTracking()
-                    .ProjectTo<ShipmentProjectContractReadDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
-                return new GenericResponseHandler<List<ShipmentProjectContractReadDto>>(200, data, data.Count());
-            
-        
+
+            var data = await _context.ShipmentProjectContracts
+                       .AsNoTracking()
+                       .OrderByDescending(a => a.CreatedDate) 
+                       .ProjectTo<ShipmentProjectContractReadDto>(_mapper.ConfigurationProvider)
+                       .ToListAsync();
+
+            return new GenericResponseHandler<List<ShipmentProjectContractReadDto>>(200, data, data.Count());
+
+
+
         }
     }
 }
