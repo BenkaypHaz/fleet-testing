@@ -9,7 +9,7 @@ namespace Service.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "ShipmentFreightTypeController")]
-    [Route("api/shipment-freight-typecontroller")]
+    [Route("api/shipment-freight-type")]
     public class ShipmentFreightTypeController : BaseController
     {
         public ShipmentFreightTypeController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }

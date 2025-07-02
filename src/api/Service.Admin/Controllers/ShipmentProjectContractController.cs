@@ -9,7 +9,7 @@ namespace Service.Admin.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "ShipmentProjectContractController")]
-    [Route("api/shipment-project-contractcontroller")]
+    [Route("api/shipment-project-contract")]
     public class ShipmentProjectContractController : BaseController
     {
         public ShipmentProjectContractController(ILogger<BaseController> logger, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(logger, unitOfWork, httpContextAccessor) { }
