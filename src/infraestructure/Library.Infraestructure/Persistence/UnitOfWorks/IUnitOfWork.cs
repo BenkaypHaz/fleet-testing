@@ -2,6 +2,7 @@
 using Library.Infraestructure.Persistence.Repositories.BusinessPartner;
 using Library.Infraestructure.Persistence.Repositories.Customer;
 using Library.Infraestructure.Persistence.Repositories.General;
+using Library.Infraestructure.Persistence.Repositories.shipment;
 using Library.Infraestructure.Persistence.Repositories.Shipment;
 
 
@@ -37,6 +38,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
 
         #region Shipment
         ShipmentFreightRepository ShipmentFreightRepository { get; }
+        ShipmentProjectContractRepository ShipmentProjectContractRepository { get; }
         #endregion
     }
 }

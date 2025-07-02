@@ -4,6 +4,7 @@ using Library.Infraestructure.Persistence.Repositories.Auth;
 using Library.Infraestructure.Persistence.Repositories.BusinessPartner;
 using Library.Infraestructure.Persistence.Repositories.Customer;
 using Library.Infraestructure.Persistence.Repositories.General;
+using Library.Infraestructure.Persistence.Repositories.shipment;
 using Library.Infraestructure.Persistence.Repositories.Shipment;
 
 namespace Library.Infraestructure.Persistence.UnitOfWorks
@@ -81,13 +82,15 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
 
         #region Shipment
         private ShipmentFreightRepository? _ShipmentFreightRepository;
-
+        private ShipmentProjectContractRepository _ShipmentProjectContractRepository;
         #endregion
 
         #region Shipment Properties
         public ShipmentFreightRepository ShipmentFreightRepository =>
             _ShipmentFreightRepository ??= new ShipmentFreightRepository(_context, _mapper);
-
+         
+        public ShipmentProjectContractRepository ShipmentProjectContractRepository =>
+            _ShipmentProjectContractRepository ??= new ShipmentProjectContractRepository(_context, _mapper);   
         #endregion
 
     }
