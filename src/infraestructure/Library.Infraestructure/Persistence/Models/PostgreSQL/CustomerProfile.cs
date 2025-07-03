@@ -41,5 +41,7 @@ public partial class CustomerProfile
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
+    public virtual ICollection<ShipmentGpsDevice> ShipmentGpsDevices { get; set; } = new List<ShipmentGpsDevice>();
+
     public virtual ICollection<ShipmentProjectContract> ShipmentProjectContracts { get; set; } = new List<ShipmentProjectContract>();
 }

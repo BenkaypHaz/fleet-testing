@@ -98,15 +98,3 @@ CREATE TABLE accounting.accounting_fuel_order (
     CONSTRAINT fk_accounting_fuel_order_created_by FOREIGN KEY (created_by) REFERENCES auth.auth_user(id),
     CONSTRAINT fk_accounting_fuel_order_modified_by FOREIGN KEY (modified_by) REFERENCES auth.auth_user(id)
 );
-
--------------------------------------------
----INSERT IN TO TABLES
--------------------------------------------
-INSERT INTO accounting.accounting_fuel_order_type (id, serial_code, name, is_active) VALUES
-(1, 'D', 'Diesel', true),
-(2, 'S', 'Súper', true),
-(3, 'R', 'Regular', true);
-
-INSERT INTO accounting.accounting_expense_type (id, name, is_active) VALUES
-(1, 'Hospedaje', true),
-(2, 'Alimentación', true);

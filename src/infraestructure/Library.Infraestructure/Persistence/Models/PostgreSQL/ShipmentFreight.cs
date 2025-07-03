@@ -19,7 +19,9 @@ public partial class ShipmentFreight
 
     public long ShipmentFreightTypeId { get; set; }
 
-    public long FreightProductTypeId { get; set; }
+    public long? FreightProductTypeId { get; set; }
+
+    public long? FreightProductQuantity { get; set; }
 
     public decimal Price { get; set; }
 
@@ -47,7 +49,7 @@ public partial class ShipmentFreight
 
     public virtual CustomerWarehouse CustomerWarehouse { get; set; } = null!;
 
-    public virtual FreightProductType FreightProductType { get; set; } = null!;
+    public virtual FreightProductType? FreightProductType { get; set; }
 
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 

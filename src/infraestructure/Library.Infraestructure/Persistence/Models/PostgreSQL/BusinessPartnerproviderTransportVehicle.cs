@@ -48,4 +48,6 @@ public partial class BusinessPartnerProviderTransportVehicle
     public virtual AuthUser? ModifiedByNavigation { get; set; }
 
     public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
+
+    public virtual ICollection<ShipmentProjectContractTransportVehicle> ShipmentProjectContractTransportVehicles { get; set; } = new List<ShipmentProjectContractTransportVehicle>();
 }

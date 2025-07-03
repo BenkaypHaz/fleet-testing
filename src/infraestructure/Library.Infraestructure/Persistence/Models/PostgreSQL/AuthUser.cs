@@ -157,7 +157,15 @@ public partial class AuthUser
 
     public virtual ICollection<ShipmentFreightStatusLog> ShipmentFreightStatusLogModifiedByNavigations { get; set; } = new List<ShipmentFreightStatusLog>();
 
+    public virtual ICollection<ShipmentGpsDevice> ShipmentGpsDeviceCreatedByNavigations { get; set; } = new List<ShipmentGpsDevice>();
+
+    public virtual ICollection<ShipmentGpsDevice> ShipmentGpsDeviceModifiedByNavigations { get; set; } = new List<ShipmentGpsDevice>();
+
     public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractCreatedByNavigations { get; set; } = new List<ShipmentProjectContract>();
 
     public virtual ICollection<ShipmentProjectContract> ShipmentProjectContractModifiedByNavigations { get; set; } = new List<ShipmentProjectContract>();
+
+    public virtual ICollection<ShipmentProjectContractTransportVehicle> ShipmentProjectContractTransportVehicleCreatedByNavigations { get; set; } = new List<ShipmentProjectContractTransportVehicle>();
+
+    public virtual ICollection<ShipmentProjectContractTransportVehicle> ShipmentProjectContractTransportVehicleModifiedByNavigations { get; set; } = new List<ShipmentProjectContractTransportVehicle>();
 }

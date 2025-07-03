@@ -42,4 +42,6 @@ public partial class ShipmentProjectContract
     public virtual SettingDispatchBranch SettingDispatchBranch { get; set; } = null!;
 
     public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
+
+    public virtual ICollection<ShipmentProjectContractTransportVehicle> ShipmentProjectContractTransportVehicles { get; set; } = new List<ShipmentProjectContractTransportVehicle>();
 }

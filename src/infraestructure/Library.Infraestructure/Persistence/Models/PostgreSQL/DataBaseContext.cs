@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Library.Infraestructure.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
@@ -93,11 +94,16 @@ public partial class DataBaseContext : DbContext
 
     public virtual DbSet<ShipmentFreightType> ShipmentFreightTypes { get; set; }
 
+    public virtual DbSet<ShipmentGpsDevice> ShipmentGpsDevices { get; set; }
+
     public virtual DbSet<ShipmentProjectContract> ShipmentProjectContracts { get; set; }
 
+    public virtual DbSet<ShipmentProjectContractTransportVehicle> ShipmentProjectContractTransportVehicles { get; set; }
+
+    public virtual DbSet<ShipmentRotulationType> ShipmentRotulationTypes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=154.38.183.223;Database=FleetManager;Username=core;Password=nsMnM0tmhPBMX4;Port=5432;");
+        => optionsBuilder.UseNpgsql(BaseHelper.GetConnectionString());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1107,7 +1113,6 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
         });
 
         modelBuilder.Entity<GeneralCity>(entity =>
@@ -1392,6 +1397,7 @@ public partial class DataBaseContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_date");
             entity.Property(e => e.CustomerWarehouseId).HasColumnName("customer_warehouse_id");
+            entity.Property(e => e.FreightProductQuantity).HasColumnName("freight_product_quantity");
             entity.Property(e => e.FreightProductTypeId).HasColumnName("freight_product_type_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
@@ -1428,7 +1434,6 @@ public partial class DataBaseContext : DbContext
 
             entity.HasOne(d => d.FreightProductType).WithMany(p => p.ShipmentFreights)
                 .HasForeignKey(d => d.FreightProductTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_shipment_freight_product_type");
 
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentFreightModifiedByNavigations)
@@ -1521,6 +1526,47 @@ public partial class DataBaseContext : DbContext
                 .HasColumnName("name");
         });
 
+        modelBuilder.Entity<ShipmentGpsDevice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_shipment_gps_device_id");
+
+            entity.ToTable("shipment_gps_device", "shipment");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.CustomerProfileId).HasColumnName("customer_profile_id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.ReceivedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("received_date");
+            entity.Property(e => e.SerialNumber)
+                .HasMaxLength(50)
+                .HasColumnName("serial_number");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentGpsDeviceCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_gps_device_created_by");
+
+            entity.HasOne(d => d.CustomerProfile).WithMany(p => p.ShipmentGpsDevices)
+                .HasForeignKey(d => d.CustomerProfileId)
+                .HasConstraintName("fk_shipment_gps_device_customer_profile");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentGpsDeviceModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_shipment_gps_device_modified_by");
+        });
+
         modelBuilder.Entity<ShipmentProjectContract>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_shipment_project_contract_id");
@@ -1568,6 +1614,72 @@ public partial class DataBaseContext : DbContext
                 .HasForeignKey(d => d.SettingDispatchBranchId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_shipment_project_contract_setting_dispatch_branch");
+        });
+
+        modelBuilder.Entity<ShipmentProjectContractTransportVehicle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_shipment_project_contract_transport_vehicle_id");
+
+            entity.ToTable("shipment_project_contract_transport_vehicle", "shipment");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BusinessPartnerTransportVehicleId).HasColumnName("business_partner_transport_vehicle_id");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.RotulationNumber).HasColumnName("rotulation_number");
+            entity.Property(e => e.ShipmentGpsDeviceId).HasColumnName("shipment_gps_device_id");
+            entity.Property(e => e.ShipmentProjectContractId).HasColumnName("shipment_project_contract_id");
+            entity.Property(e => e.ShipmentRotulationTypeId).HasColumnName("shipment_rotulation_type_id");
+
+            entity.HasOne(d => d.BusinessPartnerTransportVehicle).WithMany(p => p.ShipmentProjectContractTransportVehicles)
+                .HasForeignKey(d => d.BusinessPartnerTransportVehicleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_project_contract_transport_vehicle_vehicle");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentProjectContractTransportVehicleCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_project_contract_transport_vehicle_created_by");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShipmentProjectContractTransportVehicleModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_shipment_project_contract_transport_vehicle_modified_by");
+
+            entity.HasOne(d => d.ShipmentGpsDevice).WithMany(p => p.ShipmentProjectContractTransportVehicles)
+                .HasForeignKey(d => d.ShipmentGpsDeviceId)
+                .HasConstraintName("fk_shipment_project_contract_transport_vehicle_gps_device");
+
+            entity.HasOne(d => d.ShipmentProjectContract).WithMany(p => p.ShipmentProjectContractTransportVehicles)
+                .HasForeignKey(d => d.ShipmentProjectContractId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_project_contract_transport_vehicle_project_contract");
+
+            entity.HasOne(d => d.ShipmentRotulationType).WithMany(p => p.ShipmentProjectContractTransportVehicles)
+                .HasForeignKey(d => d.ShipmentRotulationTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_shipment_project_contract_transport_vehicle_rotulation_type");
+        });
+
+        modelBuilder.Entity<ShipmentRotulationType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_shipment_rotulation_type_id");
+
+            entity.ToTable("shipment_rotulation_type", "shipment");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
         });
 
         OnModelCreatingPartial(modelBuilder);

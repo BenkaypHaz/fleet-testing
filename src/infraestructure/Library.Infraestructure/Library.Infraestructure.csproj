@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Configuration\Automapper\Auth\" />
-    <Folder Include="Persistence\Models\PostgreSQL1\" />
   </ItemGroup>
 
   <ItemGroup>

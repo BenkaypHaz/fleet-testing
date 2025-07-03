@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
 
-public partial class FreightProductType
+public partial class ShipmentRotulationType
 {
     public long Id { get; set; }
 
@@ -11,5 +11,5 @@ public partial class FreightProductType
 
     public bool IsActive { get; set; }
 
-    public virtual ICollection<ShipmentFreight> ShipmentFreights { get; set; } = new List<ShipmentFreight>();
+    public virtual ICollection<ShipmentProjectContractTransportVehicle> ShipmentProjectContractTransportVehicles { get; set; } = new List<ShipmentProjectContractTransportVehicle>();
 }
