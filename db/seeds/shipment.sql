@@ -39,7 +39,7 @@ CREATE TABLE shipment.shipment_gps_device (
     customer_profile_id BIGINT,
     serial_number VARCHAR(50) NOT NULL,
     description TEXT NOT NULL,
-	received_date TIMESTAMP NOT NULL,
+	registration_date TIMESTAMP NOT NULL,
 	created_by BIGINT NOT NULL,
     created_date TIMESTAMP NOT NULL,
     modified_by BIGINT,
