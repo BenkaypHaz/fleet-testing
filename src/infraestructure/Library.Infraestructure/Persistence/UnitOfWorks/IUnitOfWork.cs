@@ -2,6 +2,7 @@
 using Library.Infraestructure.Persistence.Repositories.BusinessPartner;
 using Library.Infraestructure.Persistence.Repositories.Customer;
 using Library.Infraestructure.Persistence.Repositories.General;
+using Library.Infraestructure.Persistence.Repositories.Setting;
 using Library.Infraestructure.Persistence.Repositories.shipment;
 using Library.Infraestructure.Persistence.Repositories.Shipment;
 
@@ -40,6 +41,10 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         ShipmentFreightRepository ShipmentFreightRepository { get; }
         ShipmentProjectContractRepository ShipmentProjectContractRepository { get; }
         ShipmentFreightTypeRepository ShipmentFreightTypeRepository { get; }
+        #endregion
+
+        #region Setting
+        SettingFreightPricingPerCustomerRepository SettingFreightPricingPerCustomerRepository { get; }  
         #endregion
     }
 }
