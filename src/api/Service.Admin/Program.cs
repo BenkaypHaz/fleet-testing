@@ -1,7 +1,6 @@
 using Library.Infraestructure.Common.Filters.Swagger;
 using Library.Infraestructure.Common.Helpers;
 using Library.Infraestructure.Common.Middlewares;
-using Library.Infraestructure.Persistence.Models;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -130,34 +129,3 @@ app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
-
-
-
-
-
-
-
-//var builder = WebApplication.CreateBuilder(args);
-
-//// Add services to the container.
-
-//builder.Services.AddControllers();
-//// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-//var app = builder.Build();
-
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();

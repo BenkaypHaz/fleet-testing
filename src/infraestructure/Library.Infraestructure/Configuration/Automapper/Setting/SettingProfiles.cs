@@ -4,9 +4,9 @@ using Library.Infraestructure.Persistence.Models.PostgreSQL;
 
 namespace Library.Infraestructure.Configuration.Automapper.Shipment
 {
-    public class SettingProfile : AutoMapper.Profile
+    public class SettingProfiles : AutoMapper.Profile
     {
-        public SettingProfile()
+        public SettingProfiles()
         {
             #region Shipment Project Contract
             CreateMap<SettingFreightPricingPerCustomer, FreightPricingSuggestedPriceReadDto>()

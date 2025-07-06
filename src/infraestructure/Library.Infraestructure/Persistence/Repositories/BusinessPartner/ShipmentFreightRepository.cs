@@ -22,53 +22,42 @@ namespace Library.Infraestructure.Persistence.Repositories.Shipment
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
            
-                var contract = await _context.ShipmentProjectContracts
-                    .FirstOrDefaultAsync(x => x.Id == payload.ShipmentProjectContractId && x.IsActive);
+            var contract = await _context.ShipmentProjectContracts
+                .AsNoTracking()
+                .AnyAsync(x => x.Id == payload.ShipmentProjectContractId && x.IsActive);
 
-                if (contract == null)
-                {
-                    return new GenericResponseHandler<long?>(404, null,
-                        message: "El contrato de proyecto especificado no existe o no está activo");
-                }
+            if (!contract)
+                return new GenericResponseHandler<long?>(404, null, message: "El contrato de proyecto especificado no existe o no está activo");
 
-                var vehicle = await _context.BusinessPartnerProviderTransportVehicles
-                    .FirstOrDefaultAsync(x => x.Id == payload.BusinessPartnerProviderTransportVehicleId && x.IsActive);
+            var vehicle = await _context.BusinessPartnerProviderTransportVehicles
+                .AsNoTracking()
+                .AnyAsync(x => x.Id == payload.BusinessPartnerProviderTransportVehicleId && x.IsActive);
 
-                if (vehicle == null)
-                {
-                    return new GenericResponseHandler<long?>(404, null,
-                        message: "El vehículo de transporte especificado no existe o no está activo");
-                }
+            if (!vehicle)
+                return new GenericResponseHandler<long?>(404, null, message: "El vehículo de transporte especificado no existe o no está activo");
 
-                var model = _mapper.Map<ShipmentFreight>(payload);
-                model.CreatedBy = userId;
-                model.CreatedDate = DateTime.Now;
-                model.IsActive = true;
+            var model = _mapper.Map<ShipmentFreight>(payload);
+            model.ShipmentFreightStatusId = 1;
+            model.CreatedBy = userId;
 
-                if (model.ShipmentFreightStatusId == 0)
-                {
-                    model.ShipmentFreightStatusId = 1;
-                }
+            await _context.ShipmentFreights.AddAsync(model);
+            await _context.SaveChangesAsync();
 
-                await _context.ShipmentFreights.AddAsync(model);
-                await _context.SaveChangesAsync();
+            var statusLog = new ShipmentFreightStatusLog
+            {
+                ShipmentFreightId = model.Id,
+                ShipmentFreightStatusId = model.ShipmentFreightStatusId,
+                Comments = "Flete creado",
+                CreatedBy = userId,
+                CreatedDate = DateTime.Now,
+                IsActive = true
+            };
 
-                var statusLog = new ShipmentFreightStatusLog
-                {
-                    ShipmentFreightId = model.Id,
-                    ShipmentFreightStatusId = model.ShipmentFreightStatusId,
-                    Comments = "Flete creado",
-                    CreatedBy = userId,
-                    CreatedDate = DateTime.Now,
-                    IsActive = true
-                };
+            await _context.ShipmentFreightStatusLogs.AddAsync(statusLog);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
-                await _context.ShipmentFreightStatusLogs.AddAsync(statusLog);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                return new GenericResponseHandler<long?>(201, model.Id);
+            return new GenericResponseHandler<long?>(201, model.Id);
       
         }
     }

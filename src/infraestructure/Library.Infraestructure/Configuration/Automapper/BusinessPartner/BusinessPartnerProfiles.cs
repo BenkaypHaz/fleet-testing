@@ -17,6 +17,7 @@ namespace Library.Infraestructure.Configuration.Automapper.BusinessPartner
             #region Vehicle Brand
             CreateMap<BusinessPartnerVehicleBrand, VehicleBrandReadDto>();
             #endregion
+
             #region Vehicle Model
             CreateMap<BusinessPartnerVehicleModel, VehicleModelReadDto>();
             #endregion
@@ -36,15 +37,6 @@ namespace Library.Infraestructure.Configuration.Automapper.BusinessPartner
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
             #endregion
 
-            #region Customer Warehouse
-            CreateMap<CustomerWarehouse, CustomerWarehouseReadDto>();
-            #endregion
-
-            #region Shipment Freight
-            CreateMap<ShipmentFreightCreateDto, ShipmentFreight>()
-                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.Now))
-                   .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-            #endregion
         }
     }
 }

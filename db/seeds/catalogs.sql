@@ -8,10 +8,9 @@ INSERT INTO shipment.shipment_freight_status (id, name, is_active) VALUES
 (4, 'Finished', false);
 
 INSERT INTO shipment.shipment_freight_type (id, name, is_active) VALUES
-(1, 'Flete Nacional', true),
-(2, 'Flete Internacional', true),
+(1, 'Flete de patio', true),
 (3, 'Flete Foráneo', true),
-(4, 'Flete Local', false);
+(2, 'Flete Internacional', true)
 
 INSERT INTO shipment.freight_product_type (id, name, quality, is_active) VALUES
 (1, 'Material de Construcción', 800, true),
