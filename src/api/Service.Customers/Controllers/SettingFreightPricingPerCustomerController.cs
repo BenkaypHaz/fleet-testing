@@ -3,7 +3,7 @@ using Library.Infraestructure.Persistence.DTOs.Setting.FreightPricing.Read;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Service.Admin.Controllers
+namespace Service.Customers.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "SettingFreightPricingPerCustomerController")]

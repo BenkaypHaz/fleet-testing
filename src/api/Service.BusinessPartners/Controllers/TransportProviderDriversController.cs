@@ -4,7 +4,7 @@ using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Service.Admin.Controllers
+namespace Service.BusinessPartners.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "TransportProviderDriversController")]

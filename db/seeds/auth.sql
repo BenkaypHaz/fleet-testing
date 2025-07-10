@@ -78,7 +78,7 @@ CREATE TABLE auth.auth_role_authorization (
     role_id BIGINT NOT NULL,
     auth_id BIGINT NOT NULL,
     read BOOLEAN NOT NULL,
-    "cread" BOOLEAN NOT NULL,
+    "create" BOOLEAN NOT NULL,
     update BOOLEAN NOT NULL,
     delete BOOLEAN NOT NULL,
     created_by BIGINT NOT NULL,

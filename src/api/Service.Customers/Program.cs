@@ -60,8 +60,8 @@ builder.Services.AddSwaggerGen(c =>
     var version = "v1";
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    int localhostPort = Convert.ToInt32(BaseHelper.GetEnvVariable("PROJECT_SERVICE_ADMIN_PORT"));
-    var proxyPath = "admin";
+    int localhostPort = Convert.ToInt32(BaseHelper.GetEnvVariable("PROJECT_SERVICE_CUSTOMERS_PORT"));
+    var proxyPath = "customers";
 
     c.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName));
     c.OperationFilter<TagByApiExplorerSettingsOperationFilter>();

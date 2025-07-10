@@ -1,12 +1,9 @@
 ﻿using Library.Infraestructure.Common.ResponseHandler;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ShipmentFreight.Create;
-using Library.Infraestructure.Persistence.DTOs.BusinessPartner.TransportVehicle.Create;
-using Library.Infraestructure.Persistence.DTOs.BusinessPartner.TransportVehicle.Read;
-using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Service.Admin.Controllers
+namespace Service.Freights.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "ShipmentFreightController")]
@@ -27,5 +24,6 @@ namespace Service.Admin.Controllers
             var result = await _unitOfWork.ShipmentFreightRepository.Create(payload, _userId);
             return StatusCode(result.statusCode, result);
         }
+
     }
 }

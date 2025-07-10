@@ -1,11 +1,10 @@
 ﻿using Library.Infraestructure.Common.ResponseHandler;
-using Library.Infraestructure.Persistence.DTOs.Auth.Roles.Read;
 using Library.Infraestructure.Persistence.DTOs.Shipment.ShipmentProjectContract.Read;
 using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Service.Admin.Controllers
+namespace Service.Shipments.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "ShipmentFreightTypeController")]

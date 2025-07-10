@@ -1,12 +1,10 @@
 ﻿using Library.Infraestructure.Common.ResponseHandler;
-using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ProviderDriver.Read;
 using Library.Infraestructure.Persistence.DTOs.BusinessPartner.ProviderProfile.Read;
-using Library.Infraestructure.Persistence.DTOs.BusinessPartner.TransportVehicle.Read;
 using Library.Infraestructure.Persistence.DTOs.Utils.Filters;
 using Library.Infraestructure.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Service.Admin.Controllers
+namespace Service.BusinessPartners.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(GroupName = "TransportProvidersController")]
