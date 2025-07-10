@@ -26,6 +26,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         private UserRepository? _UserRepository;
         private RoleRepository? _RoleRepository;
         private AuthorizationRepository? _AuthorizationRepository;
+        private SettingDispatchBranchRepository? _SettingDispatchBranchRepository;
 
         private CountryRepository? _CountryRepository;
         private RegionRepository? _RegionRepository;
@@ -41,9 +42,17 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         public CountryRepository CountryRepository => _CountryRepository ??= new CountryRepository(_context, _mapper);
         public RegionRepository RegionRepository => _RegionRepository ??= new RegionRepository(_context, _mapper);
         public CityRepository CityRepository => _CityRepository ??= new CityRepository(_context, _mapper);
-
+        public SettingDispatchBranchRepository SettingDispatchBranchRepository =>  _SettingDispatchBranchRepository ??= new SettingDispatchBranchRepository(_context, _mapper);
         #endregion
 
+        #region Customer
+        private CustomerWarehouseRepository? _CustomerWarehouseRepository;
+        #endregion
+
+        #region Customer Properties
+        public CustomerWarehouseRepository CustomerWarehouseRepository =>
+            _CustomerWarehouseRepository ??= new CustomerWarehouseRepository(_context, _mapper);
+        #endregion
 
         #region BusinessPartner
         private VehicleBrandRepository? _VehicleBrandRepository;
@@ -52,11 +61,6 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         private ProviderDriverRepository? _ProviderDriverRepository;
         private ProviderTransportVehicleRepository? _TransportVehicleRepository;
         #endregion
-
-        #region Customer
-        private CustomerWarehouseRepository? _CustomerWarehouseRepository;
-        #endregion
-
 
         #region BusinessPartner Properties
         public VehicleBrandRepository VehicleBrandRepository =>
@@ -73,13 +77,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
 
         public ProviderTransportVehicleRepository TransportVehicleRepository =>
             _TransportVehicleRepository ??= new ProviderTransportVehicleRepository(_context, _mapper);
-        #endregion
-
-        #region Customer Properties
-        public CustomerWarehouseRepository CustomerWarehouseRepository =>
-            _CustomerWarehouseRepository ??= new CustomerWarehouseRepository(_context, _mapper);
-        #endregion
-
+        #endregion 
 
         #region Shipment
         private ShipmentFreightRepository? _ShipmentFreightRepository;

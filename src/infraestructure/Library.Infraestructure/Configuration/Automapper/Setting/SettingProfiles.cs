@@ -1,5 +1,8 @@
 ﻿
 using Library.Infraestructure.Persistence.DTOs.Setting.FreightPricing.Read;
+using Library.Infraestructure.Persistence.DTOs.Setting.SettingDispatchBranch.Create;
+using Library.Infraestructure.Persistence.DTOs.Setting.SettingDispatchBranch.Read;
+using Library.Infraestructure.Persistence.DTOs.Setting.SettingDispatchBranch.Update;
 using Library.Infraestructure.Persistence.Models.PostgreSQL;
 
 namespace Library.Infraestructure.Configuration.Automapper.Shipment
@@ -20,7 +23,21 @@ namespace Library.Infraestructure.Configuration.Automapper.Shipment
                 .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost));
             #endregion
 
+            #region SettingDispatchBranch
 
+            CreateMap<SettingDispatchBranch, SettingDispatchBranchReadDto>()
+                .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.GeneralCity != null ? src.GeneralCity.Name : null));
+
+            CreateMap<SettingDispatchBranch, SettingDispatchBranchReadFirstDto>()
+                .ForMember(dest => dest.GeneralCity, opt => opt.MapFrom(src => src.GeneralCity))
+                .ForMember(dest => dest.CreatedByNavigation, opt => opt.MapFrom(src => src.CreatedByNavigation))
+                .ForMember(dest => dest.ModifiedByNavigation, opt => opt.MapFrom(src => src.ModifiedByNavigation));
+
+            CreateMap<SettingDispatchBranchCreateDto, SettingDispatchBranch>();
+
+            CreateMap<SettingDispatchBranchUpdateDto, SettingDispatchBranch>();
+
+            #endregion
         }
     }
 }
