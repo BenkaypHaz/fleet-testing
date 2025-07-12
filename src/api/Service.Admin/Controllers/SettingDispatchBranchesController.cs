@@ -49,11 +49,5 @@ namespace Api.Admin.Controllers
             return StatusCode(result.statusCode, result);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<GenericResponseHandler<bool>>> Delete(long id)
-        {
-            var result = await _unitOfWork.SettingDispatchBranchRepository.Delete(id, _userId);
-            return StatusCode(result.statusCode, result);
-        }
     }
 }

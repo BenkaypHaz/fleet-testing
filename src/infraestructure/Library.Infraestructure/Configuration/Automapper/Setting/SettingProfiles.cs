@@ -1,5 +1,8 @@
 ﻿
 using Library.Infraestructure.Persistence.DTOs.Setting.FreightPricing.Read;
+using Library.Infraestructure.Persistence.DTOs.Setting.FuelOrderIssuer.Create;
+using Library.Infraestructure.Persistence.DTOs.Setting.FuelOrderIssuer.Read;
+using Library.Infraestructure.Persistence.DTOs.Setting.FuelOrderIssuer.Update;
 using Library.Infraestructure.Persistence.DTOs.Setting.SettingDispatchBranch.Create;
 using Library.Infraestructure.Persistence.DTOs.Setting.SettingDispatchBranch.Read;
 using Library.Infraestructure.Persistence.DTOs.Setting.SettingDispatchBranch.Update;
@@ -36,6 +39,20 @@ namespace Library.Infraestructure.Configuration.Automapper.Shipment
             CreateMap<SettingDispatchBranchCreateDto, SettingDispatchBranch>();
 
             CreateMap<SettingDispatchBranchUpdateDto, SettingDispatchBranch>();
+
+            #endregion
+
+            #region SettingFuelOrderIssuer
+
+            CreateMap<SettingFuelOrderIssuer, SettingFuelOrderIssuerReadDto>();
+
+            CreateMap<SettingFuelOrderIssuer, SettingFuelOrderIssuerReadFirstDto>()
+               .ForMember(dest => dest.CreatedByNavigation, opt => opt.MapFrom(src => src.CreatedByNavigation))
+               .ForMember(dest => dest.ModifiedByNavigation, opt => opt.MapFrom(src => src.ModifiedByNavigation));
+
+            CreateMap<SettingFuelOrderIssuerCreateDto, SettingFuelOrderIssuer>();
+
+            CreateMap<SettingFuelOrderIssuerUpdateDto, SettingFuelOrderIssuer>();
 
             #endregion
         }

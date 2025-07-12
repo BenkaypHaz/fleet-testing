@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Library.Infraestructure.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infraestructure.Persistence.Models.PostgreSQL;
@@ -39,8 +38,6 @@ public partial class DataBaseContext : DbContext
     public virtual DbSet<AuthUserForgotPwdToken> AuthUserForgotPwdTokens { get; set; }
 
     public virtual DbSet<AuthUserRole> AuthUserRoles { get; set; }
-
-    public virtual DbSet<BusinessPartnerFuelOrderIssuer> BusinessPartnerFuelOrderIssuers { get; set; }
 
     public virtual DbSet<BusinessPartnerPositionType> BusinessPartnerPositionTypes { get; set; }
 
@@ -84,6 +81,8 @@ public partial class DataBaseContext : DbContext
 
     public virtual DbSet<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomers { get; set; }
 
+    public virtual DbSet<SettingFuelOrderIssuer> SettingFuelOrderIssuers { get; set; }
+
     public virtual DbSet<SettingGasStation> SettingGasStations { get; set; }
 
     public virtual DbSet<ShipmentFreight> ShipmentFreights { get; set; }
@@ -103,7 +102,8 @@ public partial class DataBaseContext : DbContext
     public virtual DbSet<ShipmentRotulationType> ShipmentRotulationTypes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql(BaseHelper.GetConnectionString());
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=154.38.183.223;Database=FleetManager;Username=core;Password=nsMnM0tmhPBMX4;Port=5432;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -220,6 +220,7 @@ public partial class DataBaseContext : DbContext
                 .HasColumnName("quantity_gallon");
             entity.Property(e => e.SettingCurrencyId).HasColumnName("setting_currency_id");
             entity.Property(e => e.SettingGasStationId).HasColumnName("setting_gas_station_id");
+            entity.Property(e => e.ShipmentProjectContractId).HasColumnName("shipment_project_contract_id");
             entity.Property(e => e.TotalCost)
                 .HasPrecision(12, 2)
                 .HasColumnName("total_cost");
@@ -232,7 +233,7 @@ public partial class DataBaseContext : DbContext
             entity.HasOne(d => d.BusinessPartnerFuelOrderIssuer).WithMany(p => p.AccountingFuelOrders)
                 .HasForeignKey(d => d.BusinessPartnerFuelOrderIssuerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_accounting_fuel_order_business_partner_fuel_order_issuer_id");
+                .HasConstraintName("fk_accounting_fuel_order_setting_fuel_order_issuer_id");
 
             entity.HasOne(d => d.BusinessPartnerProviderDriver).WithMany(p => p.AccountingFuelOrders)
                 .HasForeignKey(d => d.BusinessPartnerProviderDriverId)
@@ -261,6 +262,11 @@ public partial class DataBaseContext : DbContext
                 .HasForeignKey(d => d.SettingGasStationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_accounting_fuel_order_setting_gas_station_id");
+
+            entity.HasOne(d => d.ShipmentProjectContract).WithMany(p => p.AccountingFuelOrders)
+                .HasForeignKey(d => d.ShipmentProjectContractId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_accounting_fuel_order_shipment_project_contract");
         });
 
         modelBuilder.Entity<AccountingFuelOrderType>(entity =>
@@ -597,23 +603,6 @@ public partial class DataBaseContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_auth_user_role_user_id");
-        });
-
-        modelBuilder.Entity<BusinessPartnerFuelOrderIssuer>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_business_partner_fuel_order_issuer_id");
-
-            entity.ToTable("business_partner_fuel_order_issuer", "business_partner");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsDefault).HasColumnName("is_default");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.PercentageOverprice)
-                .HasPrecision(5, 2)
-                .HasDefaultValueSql("0.00")
-                .HasColumnName("percentage_overprice");
         });
 
         modelBuilder.Entity<BusinessPartnerPositionType>(entity =>
@@ -1350,6 +1339,46 @@ public partial class DataBaseContext : DbContext
                 .HasConstraintName("fk_setting_freight_dispatch_branch");
         });
 
+        modelBuilder.Entity<SettingFuelOrderIssuer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_setting_business_partner_fuel_order_issuer_id");
+
+            entity.ToTable("setting_fuel_order_issuer", "setting");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedBy)
+                .HasDefaultValue(4L)
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.IsDefault).HasColumnName("is_default");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified_date");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+            entity.Property(e => e.PercentageOverprice)
+                .HasPrecision(5, 2)
+                .HasDefaultValueSql("0.00")
+                .HasColumnName("percentage_overprice");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.SettingFuelOrderIssuerCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_setting_fuel_order_issuer_created_by_user");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.SettingFuelOrderIssuerModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("fk_setting_fuel_order_issuer_modified_by_user");
+        });
+
         modelBuilder.Entity<SettingGasStation>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_setting_gas_station_id");
@@ -1546,9 +1575,9 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.ModifiedDate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("modified_date");
-            entity.Property(e => e.ReceivedDate)
+            entity.Property(e => e.RegistrationDate)
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("received_date");
+                .HasColumnName("registration_date");
             entity.Property(e => e.SerialNumber)
                 .HasMaxLength(50)
                 .HasColumnName("serial_number");
@@ -1594,7 +1623,7 @@ public partial class DataBaseContext : DbContext
             entity.HasOne(d => d.BusinessPartnerFuelOrderIssuer).WithMany(p => p.ShipmentProjectContracts)
                 .HasForeignKey(d => d.BusinessPartnerFuelOrderIssuerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_shipment_project_contract_business_partner_fuel_order_issuer");
+                .HasConstraintName("fk_shipment_project_contract_setting_fuel_order_issuer");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ShipmentProjectContractCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)

@@ -27,7 +27,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         private RoleRepository? _RoleRepository;
         private AuthorizationRepository? _AuthorizationRepository;
         private SettingDispatchBranchRepository? _SettingDispatchBranchRepository;
-
+        private SettingFuelOrderIssuerRepository? _SettingFuelOrderIssuerRepository;
         private CountryRepository? _CountryRepository;
         private RegionRepository? _RegionRepository;
         private CityRepository? _CityRepository;
@@ -42,7 +42,8 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         public CountryRepository CountryRepository => _CountryRepository ??= new CountryRepository(_context, _mapper);
         public RegionRepository RegionRepository => _RegionRepository ??= new RegionRepository(_context, _mapper);
         public CityRepository CityRepository => _CityRepository ??= new CityRepository(_context, _mapper);
-        public SettingDispatchBranchRepository SettingDispatchBranchRepository =>  _SettingDispatchBranchRepository ??= new SettingDispatchBranchRepository(_context, _mapper);
+        public SettingDispatchBranchRepository SettingDispatchBranchRepository => _SettingDispatchBranchRepository ??= new SettingDispatchBranchRepository(_context, _mapper);
+        public SettingFuelOrderIssuerRepository SettingFuelOrderIssuerRepository => _SettingFuelOrderIssuerRepository ??= new SettingFuelOrderIssuerRepository(_context, _mapper);  
         #endregion
 
         #region Customer

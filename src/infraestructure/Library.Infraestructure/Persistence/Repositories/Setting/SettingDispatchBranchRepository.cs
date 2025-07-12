@@ -101,22 +101,5 @@ namespace Library.Infraestructure.Persistence.Repositories.Setting
 
                 return new GenericResponseHandler<long?>(200, entity.Id);
         }
-
-        public async Task<GenericResponseHandler<bool>> Delete(long id, long userId)
-        {
-                var entity = await _context.SettingDispatchBranches.FindAsync(id);
-
-                if (entity == null)
-                    return new GenericResponseHandler<bool>(404, false);
-
-                entity.IsActive = false;
-                entity.ModifiedBy = userId;
-                entity.ModifiedDate = DateTime.Now;
-
-                _context.SettingDispatchBranches.Update(entity);
-                await _context.SaveChangesAsync();
-
-                return new GenericResponseHandler<bool>(200, true);
-        }
     }
 }

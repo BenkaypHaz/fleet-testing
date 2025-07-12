@@ -46,6 +46,7 @@ namespace Library.Infraestructure.Persistence.UnitOfWorks
         #region Setting
         SettingFreightPricingPerCustomerRepository SettingFreightPricingPerCustomerRepository { get; }  
         SettingDispatchBranchRepository SettingDispatchBranchRepository { get; }
+        SettingFuelOrderIssuerRepository SettingFuelOrderIssuerRepository { get; }
         #endregion
     }
 }

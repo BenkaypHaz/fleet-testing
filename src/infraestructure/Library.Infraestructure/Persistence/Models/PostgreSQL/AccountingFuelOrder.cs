@@ -11,6 +11,8 @@ public partial class AccountingFuelOrder
 
     public long SettingCurrencyId { get; set; }
 
+    public long ShipmentProjectContractId { get; set; }
+
     public long BusinessPartnerProviderTransportVehicleId { get; set; }
 
     public long BusinessPartnerFuelOrderIssuerId { get; set; }
@@ -41,7 +43,7 @@ public partial class AccountingFuelOrder
 
     public virtual AccountingFuelOrderType AccountingFuelOrderType { get; set; } = null!;
 
-    public virtual BusinessPartnerFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
+    public virtual SettingFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
 
     public virtual BusinessPartnerProviderDriver? BusinessPartnerProviderDriver { get; set; }
 
@@ -54,4 +56,6 @@ public partial class AccountingFuelOrder
     public virtual SettingCurrency SettingCurrency { get; set; } = null!;
 
     public virtual SettingGasStation SettingGasStation { get; set; } = null!;
+
+    public virtual ShipmentProjectContract ShipmentProjectContract { get; set; } = null!;
 }

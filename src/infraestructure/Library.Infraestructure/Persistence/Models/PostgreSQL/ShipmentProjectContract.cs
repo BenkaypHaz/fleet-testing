@@ -31,7 +31,9 @@ public partial class ShipmentProjectContract
 
     public bool IsActive { get; set; }
 
-    public virtual BusinessPartnerFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
+    public virtual ICollection<AccountingFuelOrder> AccountingFuelOrders { get; set; } = new List<AccountingFuelOrder>();
+
+    public virtual SettingFuelOrderIssuer BusinessPartnerFuelOrderIssuer { get; set; } = null!;
 
     public virtual AuthUser CreatedByNavigation { get; set; } = null!;
 

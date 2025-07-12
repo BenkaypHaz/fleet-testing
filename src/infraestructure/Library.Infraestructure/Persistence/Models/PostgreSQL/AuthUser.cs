@@ -149,6 +149,10 @@ public partial class AuthUser
 
     public virtual ICollection<SettingFreightPricingPerCustomer> SettingFreightPricingPerCustomerModifiedByNavigations { get; set; } = new List<SettingFreightPricingPerCustomer>();
 
+    public virtual ICollection<SettingFuelOrderIssuer> SettingFuelOrderIssuerCreatedByNavigations { get; set; } = new List<SettingFuelOrderIssuer>();
+
+    public virtual ICollection<SettingFuelOrderIssuer> SettingFuelOrderIssuerModifiedByNavigations { get; set; } = new List<SettingFuelOrderIssuer>();
+
     public virtual ICollection<ShipmentFreight> ShipmentFreightCreatedByNavigations { get; set; } = new List<ShipmentFreight>();
 
     public virtual ICollection<ShipmentFreight> ShipmentFreightModifiedByNavigations { get; set; } = new List<ShipmentFreight>();

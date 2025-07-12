@@ -13,7 +13,7 @@ public partial class ShipmentGpsDevice
 
     public string Description { get; set; } = null!;
 
-    public DateTime ReceivedDate { get; set; }
+    public DateTime RegistrationDate { get; set; }
 
     public long CreatedBy { get; set; }
 
